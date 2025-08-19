@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LecClass-Mapper">
+<select id="selectLecClassList" resultType="lec_class">
+select *
+from lec_class
+order by lec_date desc
+</select>
+<select id="selectLecClassByID" parameterType="str" resultType="lec_class">
+select *
+from lec_class
+where lec_id=#{lec_id}
+</select>
+</mapper>

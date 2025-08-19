@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StuLec-Mapper">
+
+    <select id="selectLectureListByStudentId" parameterType="str" resultType="stuLec">
+        select *
+        from stu_lec
+        where stu_id is not NULL and mem_id = #{mem_id}
+    </select>
+</mapper>

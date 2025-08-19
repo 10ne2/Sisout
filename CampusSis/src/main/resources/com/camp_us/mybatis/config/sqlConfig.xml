@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias type="java.lang.String" alias="str"/>
+		<typeAlias type="java.lang.Integer" alias="int"/>
+		
+		<typeAlias type="com.camp_us.dto.MemberVO" alias="account"/>
+		<typeAlias type="com.camp_us.dto.MenuVO" alias="menu"/>
+		<typeAlias type="com.camp_us.dto.LecClassVO" alias="lec_class"/>
+		<typeAlias type="com.camp_us.dto.UnsubmitHomeworkVO" alias="unsubmithw"/>
+		<typeAlias type="com.camp_us.dto.ComingLecVO" alias="cominglec"/>
+		<typeAlias type="com.camp_us.dto.OtherDashStuVO" alias="otherdashstu"/>
+		<typeAlias type="com.camp_us.dto.StuLecVO" alias="stuLec"/>
+		<typeAlias type="com.camp_us.dto.MessageVO" alias="message"/>
+		<typeAlias type="com.camp_us.dto.MailFileVO" alias="mfile"/>
+		
+		<typeAlias type="com.camp_us.command.PageMaker" alias="pageMaker"/>
+	</typeAliases>
+</configuration>
+ 
+
+
+
+
+

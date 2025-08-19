@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ComingLec-Mapper">
+	<select id="selectComingLec" parameterType="String" resultType="cominglec">
+		SELECT
+			lec.lec_name,
+			a.mem_name,
+  			ll.stu_id,
+			next_class_date - TRUNC(SYSDATE) AS d_day
+		FROM (
+			SELECT 
+			    lc.lec_id,
+			    lc.lec_name,
+			    lc.lec_profes,
+			    NEXT_DAY(TRUNC(SYSDATE) - 1, lc.lec_day) AS next_class_date
+			FROM lec_class lc
+			) lec
+		JOIN professor p ON p.profes_id = lec.lec_profes
+		JOIN account a ON a.mem_id = p.mem_id
+		JOIN lecture_list ll ON ll.lec_id = lec.lec_id
+		where ll.stu_id = #{stu_id}
+		ORDER BY d_day
+	</select>
+
+</mapper>
+
+
+
+
+

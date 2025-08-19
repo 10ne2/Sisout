@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OtherDashStu-Mapper">
+	<select id="selectNoticeList" parameterType="String"
+		resultType="otherdashstu">
+		<![CDATA[select *
+		from(
+			select
+			lc.lec_id as lcId,
+			ln.lecnotice_id as noticeId,
+			lc.lec_name as subjectName,
+			ln.lecnotice_name as title,
+			a.mem_name as professorName,
+			ln.lecnotice_date as regDate,
+			ln.view_cnt as isNew
+		from lec_notice ln
+
+		join lec_class lc on lc.lec_id = ln.lec_id
+		join professor p on lc.lec_profes = p.profes_id
+		join account a on p.mem_id = a.mem_id
+		join lecture_list ll on lc.lec_id = ll.lec_id
+
+		where ll.stu_id = #{stu_id}
+		order by isNew, regDate
+		)
+		WHERE ROWNUM <= 4
+  		]]>
+	</select>
+	
+	<select id="selectFileList" parameterType="String" resultType="otherdashstu">
+		<![CDATA[select *
+		from
+		(select
+			lc.lec_name as subjectName,
+		    cf.cf_name as cfTitle,
+		    a.mem_name as professorName,
+		    cf.cf_date as cfRegDate,
+		    cf.view_cnt as cfIsNew
+		from class_file cf
+
+		join lec_class lc on lc.lec_id = cf.lec_id
+		join professor p on lc.lec_profes = p.profes_id
+		join account a on p.mem_id = a.mem_id
+		join lecture_list ll on lc.lec_id = ll.lec_id
+		
+		where ll.stu_id = #{stu_id}
+		order by cfIsNew, cfRegDate
+		)
+		WHERE ROWNUM <= 4
+  		]]>
+	</select>
+	
+	<select id="selectAttendenceList" parameterType="String" resultType="otherdashstu">
+		SELECT
+		    subjectName,         
+		    professorName,        
+		    classDate,         
+		    attendanceStatus
+		FROM vw_atten_list 
+		WHERE stu_id = #{stu_id}
+		  AND classdate >= lec_date   
+		  AND classdate BETWEEN TRUNC(SYSDATE, 'IW') AND TRUNC(SYSDATE, 'IW') + 6
+		ORDER BY classdate
+	</select>
+	
+	<select id="selectAttendencePercent" parameterType="String" resultType="otherdashstu">
+		SELECT
+		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_no,
+		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 2 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_late,
+		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 3 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_ok,
+		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 0 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_none
+		FROM vw_atten_list 
+		WHERE stu_id = #{stu_id}
+		  AND classdate >= lec_date   
+		  AND classdate BETWEEN TRUNC(SYSDATE, 'IW') AND TRUNC(SYSDATE, 'IW') + 6
+	</select>
+	
+
+</mapper>
+
+
+
+
+

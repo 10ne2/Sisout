@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UnsubmitHomework-Mapper">
+	<select id="selectUnsubmitHomework" parameterType="String"
+		resultType="unsubmithw">
+		SELECT
+		h.hw_name, h.hw_enddate, l.lec_name, a.mem_name,
+		TRUNC(h.hw_enddate - SYSDATE) AS d_day
+		FROM
+		homework h
+		JOIN lec_class l
+		ON h.lec_id = l.lec_id
+		JOIN lecture_list ll ON l.lec_id = ll.lec_id
+		JOIN professor p on l.lec_profes = p.profes_id
+		JOIN account a on
+		p.mem_id = a.mem_id
+		WHERE
+		ll.stu_id = #{stu_id}
+		AND NOT EXISTS (
+		SELECT 1
+		FROM homework_submit hws
+		WHERE hws.hw_no = h.hw_no
+		AND hws.lecs_id =
+		ll.lecs_id
+		)
+		ORDER BY
+		h.hw_enddate
+	</select>
+
+	<select id="selectStuIdbyMemId" resultType="unsubmithw">
+		SELECT stu_id
+		FROM STUDENTS
+		WHERE mem_id = #{mem_id}
+	</select>
+
+</mapper>
+
+
+
+
+
