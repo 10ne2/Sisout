@@ -190,7 +190,7 @@
 															<div class="" style="display: flex; flex-direction: row;">
 																<div style="margin-left:10px;">
 																    <img id="readImg_"
-																    src="<%=request.getContextPath()%>/resources/images/read/${waste.mail_sender == sessionScope.loginUser.mem_id ? waste.mail_rread : waste.mail_sread}.png"
+																    src="<%=request.getContextPath()%>/resources/images/read/${waste.mail_sender == sessionScope.loginUser.mem_id ? waste.mail_sread : waste.mail_rread}.png"
 																      style="width:20px; cursor:pointer"/>
 																</div>
 															</div>

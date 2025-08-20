@@ -78,7 +78,7 @@
                 <div class="float-right">
                   <button type="reset" class="btn btn-default" style="height: 35px; margin-top:-5px; line-height: 5px"
                   onclick="closeWrite()"><i class="fas fa-times"></i>&nbsp;&nbsp;창닫기</button>
-                  <button type="submit" class="btn btn-primary"
+                  <button id="sendBtn" type="submit" class="btn btn-primary"
                   style="height: 33px; margin-top:-5px; line-height: 5px; background-color:#2EC4B6; border: 1px solid #2EC4B6"
                   onclick="regist_go()"><i class="far fa-envelope"></i> &nbsp;&nbsp;보내기</button>
                 </div>
@@ -214,10 +214,19 @@ document.querySelectorAll(".sendMail").forEach(el => {
 // 페이지 떠나기 직전에 confirm
 window.addEventListener("beforeunload", function (e) {
     if (isFormDirty) {
-        // 표준 브라우저 동작
-        e.preventDefault(); 
+        e.preventDefault();
         e.returnValue = "작성중인 내용이 사라집니다. 페이지를 떠나시겠습니까?";
         return "작성중인 내용이 사라집니다. 페이지를 떠나시겠습니까?";
+    }
+});
+
+// 보내기 버튼 클릭 시 dirty 해제만 따로 처리
+document.addEventListener("DOMContentLoaded", () => {
+    const sendBtn = document.querySelector("#sendBtn"); // 버튼에 id 주는 게 안전
+    if (sendBtn) {
+        sendBtn.addEventListener("click", () => {
+            isFormDirty = false; // confirm 안 뜨게 플래그 해제
+        });
     }
 });
 </script>

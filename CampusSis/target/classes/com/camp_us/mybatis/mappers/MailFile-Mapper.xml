@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MailFile-Mapper">
+	<select id="selectMailFileByMafileNo" resultType="mfile">
+		select *
+		from mail_file
+		where mafile_no = #{mafile_no}
+	</select>
+	<select id="selectMailFileByMailId" resultType="mfile">
+		select *
+		from mail_file
+		where mail_id = #{mail_id}
+	</select>
+	<insert id="insertMailFile" parameterType="mfile"> 
+		insert into 
+		mail_file(mafile_no, mafile_name, mafile_type, mail_id, mafile_uploadpath)
+  		values(#{mafile_no}, #{mafile_name}, #{mafile_type}, #{mail_id}, #{mafile_uploadpath})
+	</insert>
+	<delete id="deleteMailFile">
+		delete 
+		from mail_file 
+		where mafile_no = #{mafile_no}
+	</delete>
+	<delete id="deleteAllMailFile">
+		delete 
+		from mail_file 
+		where mail_id = #{mail_id}
+	</delete>
+	<select id="selectMailFileSeqNext" resultType="int">
+		select mail_file_seq.nextval as mafile_no from dual
+	</select>
+
+</mapper>
+
+
+
+
+

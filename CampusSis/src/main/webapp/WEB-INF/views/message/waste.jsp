@@ -137,18 +137,15 @@
 
 <form id="jobForm" style="display:none;">	
 	<input type='text' name="page" value="1" />
-	<input type='text' name="keyword" value="" />
 	<input type='text' name="perPageNum" value="" />
 </form>
 <script>
 function search_list(page){
-	let keyword = document.querySelector('#keyword').value;
 	let perPageNum = 12;
 	let form = document.querySelector("#jobForm");
 	
 	//alert(perPageNum+":"+searchType+":"+keyword);
 	
-	form.keyword.value = keyword;
 	form.page.value = page;
 	form.perPageNum.value = perPageNum;
 	

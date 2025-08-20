@@ -132,7 +132,7 @@
 							<!-- /.mail-box-messages -->
 						<div class="card-footer">
 						<!-- pagination.jsp -->
-							<div style="display:${not empty sendMailList ? 'visible':'none' }">
+							<div <%-- style="display:${not empty sendMailList ? 'visible':'none'  --%>}">
 								<%@ include file="/WEB-INF/views/module/pagination.jsp" %>	
 							</div>	    			
 	    				</div>

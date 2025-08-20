@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Message-Mapper">
+	<sql id="receiveSearch">
+	  <if test="keyword != null and keyword != ''">
+	    AND (
+	      a.mem_name LIKE '%' || #{keyword} || '%'
+	      OR m.mail_sender LIKE '%' || #{keyword} || '%'
+	      OR m.mail_name LIKE '%' || #{keyword} || '%'
+	    )
+	  </if>
+	</sql>
+	<sql id="sendSearch">
+	  <if test="keyword != null and keyword != ''">
+	    AND (
+	      a.mem_name LIKE '%' || #{keyword} || '%'
+	      OR m.mail_receiver LIKE '%' || #{keyword} || '%'
+	      OR m.mail_name LIKE '%' || #{keyword} || '%'
+	    )
+	  </if>
+	</sql>
+	
+	<select id="selectReceiveMailByMemId" parameterType="str" resultType="message">
+		<![CDATA[select *
+		from (
+		    select
+		        m.mail_id,
+		        m.mail_name,
+		        m.mail_rdate,
+		        m.mail_sender,
+		        m.mail_rread,
+		        a.mem_name as sender_name
+		    from mail m
+		    join account a on m.mail_sender = a.mem_id
+		    where mail_receiver = #{mem_id} and m.mail_waste = 0
+		    order by m.mail_rdate desc
+		)
+		where rownum <= 8]]>
+	</select>
+	<select id="selectSenderMailByMemId" parameterType="str" resultType="message">
+		<![CDATA[select *
+		from (
+			select
+				m.mail_id,
+				m.mail_name,
+				m.mail_sdate,
+				m.mail_receiver,
+				m.mail_slock,
+				m.mail_sread,
+				a.mem_name as receiver_name
+			from mail m
+			join account a on m.mail_receiver = a.mem_id
+			where mail_sender = #{mem_id} and m.mail_waste = 0
+			order by m.mail_sdate desc
+		)
+		where rownum <= 8]]>
+	</select>
+	<select id="selectAllWasteMail" parameterType="str" resultType="message">
+		<![CDATA[select *
+		from (
+			select
+				m.mail_id,
+				m.mail_name,
+				m.mail_sdate,
+				m.mail_rdate,
+				m.mail_receiver,
+				m.mail_sender,
+				m.mail_rread,
+				m.mail_sread,
+				m.mail_slock,
+				ra.mem_name as receiver_name,
+				sa.mem_name as sender_name
+			from mail m
+			join account ra on m.mail_receiver = ra.mem_id
+			join account sa on m.mail_sender = sa.mem_id
+			where (m.mail_sender = #{mem_id}  OR m.mail_receiver = #{mem_id} ) and m.mail_waste = 1
+			order by GREATEST(m.mail_sdate, m.mail_rdate) desc
+		)
+		where rownum <= 5]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectReceiveUnreadMailCount" parameterType="str" resultType="int">
+		select count(*)
+		from mail
+		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rread = 0 			  	
+	</select>
+	<select id="selectMailByMailId" parameterType="int"  resultType="message">
+		select
+			m.mail_id,
+			m.mail_name,
+			m.mail_rimp,
+			m.mail_simp,
+			m.mail_rdate,
+			m.mail_sdate,
+			m.mail_ddate,
+			m.mail_rlock,
+			m.mail_slock,
+			a.mem_name as receiver_name,
+			b.mem_name as sender_name,
+			a.mem_email as receiver_email,
+			b.mem_email as sender_email,
+			m.mail_desc
+		from mail m
+		join account a on m.mail_receiver = a.mem_id
+		join account b on m.mail_sender = b.mem_id
+		where mail_id=#{mail_id}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectSearchReceiveMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_rdate,
+		    m.mail_sender,
+		    a.mem_name AS sender_name,
+		    a.mem_email As sender_email,
+		    m.mail_rimp,
+		    m.mail_rread,
+		    m.mail_rlock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where m.mail_receiver = #{mem_id} and m.mail_waste = 0
+		<include refid="receiveSearch" />
+		order by m.mail_rdate desc
+	</select>
+	<select id="selectSearchReceiveImpMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_rdate,
+		    m.mail_sender,
+		    a.mem_name AS sender_name,
+		    a.mem_email As sender_email,
+		    m.mail_rimp,
+		    m.mail_rread,
+		    m.mail_rlock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where m.mail_receiver = #{mem_id}	and m.mail_waste = 0 and m.mail_rimp = 1	  	
+		<include refid="receiveSearch" />
+		order by m.mail_rdate desc
+	</select>
+	<select id="selectSearchReceiveReadMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_rdate,
+		    m.mail_sender,
+		    a.mem_name AS sender_name,
+		    a.mem_email As sender_email,
+		    m.mail_rimp,
+		    m.mail_rread,
+		    m.mail_rlock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where m.mail_receiver = #{mem_id}	and m.mail_waste = 0 and m.mail_rread = 0	  	
+		<include refid="receiveSearch" />
+		order by m.mail_rdate desc
+	</select>
+	<select id="selectSearchReceiveLockMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_rdate,
+		    m.mail_sender,
+		    a.mem_name AS sender_name,
+		    a.mem_email As sender_email,
+		    m.mail_rimp,
+		    m.mail_rread,
+		    m.mail_rlock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where m.mail_receiver = #{mem_id}	and m.mail_waste = 0 and m.mail_rlock = 1  	
+		<include refid="receiveSearch" />
+		order by m.mail_rdate desc
+	</select>
+	<select id="selectSearchReceiveMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where mail_receiver = #{mem_id} and mail_waste = 0 			  	
+		<include refid="receiveSearch" />
+	</select>
+	<select id="selectSearchReceiveImpMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rimp = 1		  	
+		<include refid="receiveSearch" />
+	</select>
+	<select id="selectSearchReceiveReadMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rread = 0 			  	
+		<include refid="receiveSearch" />
+	</select>
+	<select id="selectSearchReceiveLockMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_sender = a.mem_id
+		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rlock = 1 			  	
+		<include refid="receiveSearch" />
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectSearchSendMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_sdate,
+		    m.mail_receiver,
+		    a.mem_name AS receiver_name,
+		    a.mem_email As receiver_email,
+		    m.mail_simp,
+		    m.mail_sread,
+		    m.mail_slock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where m.mail_sender = #{mem_id} and m.mail_waste = 0
+		<include refid="sendSearch" />
+		order by m.mail_sdate desc
+	</select>
+	<select id="selectSearchSendImpMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_sdate,
+		    m.mail_receiver,
+		    a.mem_name AS receiver_name,
+		    a.mem_email As receiver_email,
+		    m.mail_simp,
+		    m.mail_sread,
+		    m.mail_slock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where m.mail_sender = #{mem_id}	and m.mail_waste = 0 and m.mail_simp = 1	  	
+		<include refid="sendSearch" />
+		order by m.mail_sdate desc
+	</select>
+	<select id="selectSearchSendLockMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_sdate,
+		    m.mail_receiver,
+		    a.mem_name AS receiver_name,
+		    a.mem_email As receiver_email,
+		    m.mail_simp,
+		    m.mail_sread,
+		    m.mail_slock,
+		    m.mail_waste
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where m.mail_sender = #{mem_id}	and m.mail_waste = 0 and m.mail_slock = 1  	
+		<include refid="sendSearch" />
+		order by m.mail_sdate desc
+	</select>
+	<select id="selectSearchSendMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where mail_sender = #{mem_id} and mail_waste = 0 			  	
+		<include refid="sendSearch" />
+	</select>
+	<select id="selectSearchSendImpMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where mail_sender = #{mem_id} and mail_waste = 0 and mail_simp = 1		  	
+		<include refid="sendSearch" />
+	</select>
+	<select id="selectSearchSendLockMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		where mail_sender = #{mem_id} and mail_waste = 0 and mail_slock = 1 			  	
+		<include refid="sendSearch" />
+	</select>
+	
+	
+	
+	
+	
+	
+	<select id="selectWasteMailList" parameterType="pageMaker" resultType="message">
+		select
+			m.mail_id,
+		  	m.mail_name,
+		    m.mail_sdate,
+		    m.mail_rdate,
+		    m.mail_receiver,
+		    m.mail_sender,
+		    m.mail_rread,
+		    m.mail_sread,
+		    a.mem_name AS receiver_name,
+		    b.mem_name AS sender_name,
+		    a.mem_email As receiver_email,
+		    b.mem_email AS sender_name,
+		    m.mail_rlock,
+		    m.mail_slock,
+		    m.mail_waste,
+		    m.mail_ddate
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		JOIN account b ON m.mail_sender = b.mem_id
+		where (m.mail_sender = #{mem_id}  OR m.mail_receiver = #{mem_id}) and m.mail_waste = 1
+		order by m.mail_ddate desc
+	</select>
+	<select id="selectWasteMailListCount" parameterType="pageMaker" resultType="int">
+		select
+		count(*)
+		from mail m
+		JOIN account a ON m.mail_receiver = a.mem_id
+		JOIN account b ON m.mail_sender = b.mem_id
+		where (m.mail_sender = #{mem_id}  OR m.mail_receiver = #{mem_id}) and m.mail_waste = 1
+	</select>
+	
+	
+	
+	<select id="selectMailSeqNext" resultType="int">
+		select mail_seq.nextval as mail_id from dual
+	</select>
+	
+	
+	
+	
+	
+	<insert id="insertMail" parameterType="message">
+		insert
+		into mail (mail_id, mail_name, mail_receiver, mail_sender, mail_desc)
+		values (#{mail_id},#{mail_name}, #{mail_receiver}, #{mail_sender}, #{mail_desc})
+	</insert>
+	
+	
+	
+	
+	<update id="updateRRead" parameterType="int">
+		update 
+		mail 
+		set 
+		mail_rread = 1
+		where mail_id=#{mail_id}
+	</update>
+	<update id="updateRImp" parameterType="int">
+		UPDATE mail
+	    SET mail_rimp = CASE WHEN mail_rimp = 1 THEN 0 ELSE 1 END
+	    WHERE mail_id = #{mail_id}
+	</update>
+	<update id="updateSImp" parameterType="int">
+		UPDATE mail
+	    SET mail_simp = CASE WHEN mail_simp = 1 THEN 0 ELSE 1 END
+	    WHERE mail_id = #{mail_id}
+	</update>
+	<update id="updateRLock" parameterType="int">
+		update 
+		mail 
+		set 
+		mail_rlock = CASE WHEN mail_rlock = 1 THEN 0 ELSE 1 END
+		where mail_id=#{mail_id}
+	</update>
+	<update id="updateSLock" parameterType="int">
+		update 
+		mail 
+		set 
+		mail_slock = CASE WHEN mail_slock = 1 THEN 0 ELSE 1 END
+		where mail_id=#{mail_id}
+	</update>
+	<update id="updateWaste" parameterType="int">
+		update 
+		mail 
+		set 
+		mail_waste = 1, mail_ddate = SYSDATE, mail_rimp = 0, mail_simp = 0
+		where mail_id=#{mail_id}
+			AND NVL(mail_rlock,0) != 1   <!-- rlock이 1이면 제외 -->
+      		AND NVL(mail_slock,0) != 1
+	</update>
+	<update id="updateWasteBack" parameterType="int">
+		update 
+		mail 
+		set 
+		mail_waste = 0, mail_ddate = null
+		where mail_id=#{mail_id}
+	</update>
+	
+	
+	
+	<delete id="deleteMail" parameterType="int">
+		delete
+		from mail
+		where mail_id = #{mail_id}
+	</delete>
+	<delete id="deleteAllWaste">
+	    delete from mail
+	    where mail_waste = 1
+	</delete>
+	
+</mapper>
+
+
+
+
+
