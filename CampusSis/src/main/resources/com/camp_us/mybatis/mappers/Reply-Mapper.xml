@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reply-Mapper">
+
+	<select id="selectReplyListPage" parameterType="map"
+		resultType="com.camp_us.dto.ReplyVO">
+		SELECT RE_ID AS rno,
+		BOARD_ID AS boardId,
+		RE_MEMID AS replyer,
+		RE_DESC AS replytext,
+		RE_REGDATE AS regdate
+		FROM POST_RE
+		WHERE BOARD_ID = #{boardId}
+		ORDER BY RE_REGDATE DESC
+
+	</select>
+
+
+	<!-- 총 댓글 수 -->
+	<select id="countReply" resultType="int" parameterType="int">
+		SELECT COUNT(*) FROM POST_RE WHERE BOARD_ID = #{bno}
+	</select>
+
+<insert id="insertReply" parameterType="com.camp_us.dto.ReplyVO">
+	INSERT INTO POST_RE (RE_ID, RE_MEMID, RE_DESC, BOARD_ID, RE_REGDATE)
+	VALUES (SEQ_REPLY.NEXTVAL, #{replyer}, #{replytext}, #{boardId}, SYSDATE)
+</insert>
+
+
+	<update id="updateReply" parameterType="com.camp_us.dto.ReplyVO">
+    UPDATE POST_RE
+    SET RE_DESC = #{replytext}
+    WHERE RE_ID = #{rno}
+</update>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="int">
+		DELETE FROM POST_RE WHERE RE_ID = #{rno}
+	</delete>
+<delete id="deleteAllReplies" parameterType="str">
+    DELETE FROM POST_RE WHERE BOARD_ID = #{boardId}
+</delete>
+
+
+
+	<!-- 댓글 번호로 게시글 번호 찾기 -->
+	<select id="getBnoByRno" resultType="int" parameterType="int">
+		SELECT BOARD_ID FROM POST_RE WHERE RE_ID = #{rno}
+	</select>
+
+</mapper>

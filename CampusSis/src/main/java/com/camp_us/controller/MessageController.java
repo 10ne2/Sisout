@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriUtils;
 
 import com.camp_us.command.MessageRegistCommand;
-import com.camp_us.command.PageMaker;
+import com.camp_us.command.PageMakerWH;
 import com.camp_us.dao.MailFileDAO;
 import com.camp_us.dto.MailFileVO;
 import com.camp_us.dto.MemberVO;
@@ -80,7 +80,7 @@ public class MessageController {
 	
 	//받은메일
 	@GetMapping("/receive")
-	public String receiveList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String receiveList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -89,6 +89,7 @@ public class MessageController {
         
         List<MessageVO> receiveMailList = messageService.receiveMailList(pageMaker, mem_id);
         model.addAttribute("receiveMailList", receiveMailList);
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -99,7 +100,7 @@ public class MessageController {
 	}
 	
 	@GetMapping("/receiveImp")
-	public String receiveImpList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String receiveImpList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -109,6 +110,7 @@ public class MessageController {
         List<MessageVO> receiveImpList = messageService.receiveImpList(pageMaker, mem_id);
         model.addAttribute("receiveMailList", receiveImpList);
         model.addAttribute("selectedFilter", "imp");
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -133,7 +135,7 @@ public class MessageController {
 	}
 	
 	@GetMapping("/receiveRead")
-	public String receiveReadList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String receiveReadList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -143,6 +145,7 @@ public class MessageController {
         List<MessageVO> receiveReadList = messageService.receiveReadList(pageMaker, mem_id);
         model.addAttribute("receiveMailList", receiveReadList);
         model.addAttribute("selectedFilter", "read");
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -152,7 +155,7 @@ public class MessageController {
 	}
 	
 	@GetMapping("/receiveLock")
-	public String receiveLockList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String receiveLockList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -162,6 +165,7 @@ public class MessageController {
         List<MessageVO> receiveLockList = messageService.receiveLockList(pageMaker, mem_id);
         model.addAttribute("receiveMailList", receiveLockList);
         model.addAttribute("selectedFilter", "lock");
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -187,7 +191,7 @@ public class MessageController {
 	
 	//보낸메일
 	@GetMapping("/send")
-	public String sendList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String sendList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -196,6 +200,7 @@ public class MessageController {
         
         List<MessageVO> sendMailList = messageService.sendMailList(pageMaker, mem_id);
         model.addAttribute("sendMailList", sendMailList);
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -206,7 +211,7 @@ public class MessageController {
 	}
 	
 	@GetMapping("/sendImp")
-	public String sendImpList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String sendImpList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -216,6 +221,7 @@ public class MessageController {
         List<MessageVO> sendImpList = messageService.sendImpList(pageMaker, mem_id);
         model.addAttribute("sendMailList", sendImpList);
         model.addAttribute("selectedFilter", "imp");
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -240,7 +246,7 @@ public class MessageController {
 	}
 	
 	@GetMapping("/sendLock")
-	public String sendLockList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception{
+	public String sendLockList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception{
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -250,6 +256,7 @@ public class MessageController {
         List<MessageVO> sendLockList = messageService.sendLockList(pageMaker, mem_id);
         model.addAttribute("sendMailList", sendLockList);
         model.addAttribute("selectedFilter", "lock");
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);
@@ -276,7 +283,7 @@ public class MessageController {
 	
 	//휴지통
 	@GetMapping("/waste")
-	public String wasteList(@ModelAttribute PageMaker pageMaker, HttpSession session, Model model) throws Exception {
+	public String wasteList(@ModelAttribute PageMakerWH pageMaker, HttpSession session, Model model) throws Exception {
 		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -285,6 +292,7 @@ public class MessageController {
         
         List<MessageVO> wasteList = messageService.wasteList(pageMaker, mem_id);
         model.addAttribute("wasteList", wasteList);
+        model.addAttribute("pageMaker", pageMaker);
         
         int unreadCount = messageService.unreadCount(mem_id);
         String displayCount = unreadCount >= 1000 ? "999+" : String.valueOf(unreadCount);

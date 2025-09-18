@@ -18,61 +18,90 @@
 			where phone like '%'||#{keyword}||'%'
 		</if>
 	</sql>
-	
+
 	<select id="selectMemberList" resultType="account">
 		select *
 		from account
 		order by mem_lastlogin_date desc
 	</select>
-	
-	<select id="selectMemberByID" parameterType="str" resultType="account">
-		select *
-		from account
-		where mem_id=#{mem_id}
+
+	<select id="selectMemberByID" parameterType="string"
+		resultType="account">
+		SELECT
+		MEM_ID,
+		MEM_PASS AS mem_pass,
+		MEM_NAME,
+		MEM_EMAIL,
+		MEM_PHONE,
+		MEM_ADD,
+		MEM_AUTH,
+		PICTURE AS picture,    <!-- ★ 추가 -->
+		BIRTH_DATE AS birthDate
+		FROM ACCOUNT
+		WHERE MEM_ID = #{mem_id}
 	</select>
-	
+
 	<insert id="insertMember" parameterType="account">
 		insert into
 		account(mem_id, mem_pass, mem_email, mem_phone, mem_name, mem_add)
-		values(#{mem_id}, #{mem_pass}, #{mem_email},#{mem_phone},#{mem_name},#{mem_add})
+		values(#{mem_id}, #{mem_pass},
+		#{mem_email},#{mem_phone},#{mem_name},#{mem_add})
 	</insert>
-	
+
 	<update id="updateMember" parameterType="account">
-		update account 
-		set mem_pass=#{mem_pass},mem_email=#{mem_email},mem_phone=#{mem_phone},mem_name=#{mem_name}
+		update account
+		set
+		mem_pass=#{mem_pass},mem_email=#{mem_email},mem_phone=#{mem_phone},mem_name=#{mem_name}
 		where mem_id=#{mem_id}
 	</update>
-	
+
 	<update id="updateLastLogin" parameterType="account">
-		update account 
-		set mem_lastlogin_date=#{mem_lastlogin_date}, mem_lastlogin_time=#{mem_lastlogin_time}
+		update account
+		set
+		mem_lastlogin_date=#{mem_lastlogin_date},
+		mem_lastlogin_time=#{mem_lastlogin_time}
 		where mem_id=#{mem_id}
 	</update>
-	
+
 	<delete id="deleteMember" parameterType="str">
 		delete
 		from account
-		where mem_id=#{mem_id}
+		where
+		mem_id=#{mem_id}
 	</delete>
-	
-	<insert id="insertAuthorities" >
-		insert into auth_detail(mem_id,role_id)
-		values (#{mem_id},#{role_id})
+
+	<insert id="insertAuthorities">
+		insert into
+		auth_detail(mem_id,role_id)
+		values
+		(#{mem_id},#{role_id})
 	</insert>
-	
-	<delete id="deleteAllAuthorityById" >
-		delete
-		from auth_detail
-		where mem_id = #{mem_id} and role_id!='student'
+
+	<delete id="deleteAllAuthorityById" parameterType="string">
+		DELETE FROM auth_detail WHERE mem_id = #{mem_id}
 	</delete>
-	
-	<select id="selectAuthoritiesById" resultType="str">
-		select mem_auth
-		from account
-		where mem_auth=#{mem_auth}
+
+	<select id="selectAuthoritiesById" parameterType="string"
+		resultType="string">
+		SELECT MEM_AUTH FROM ACCOUNT WHERE MEM_ID = #{mem_id}
 	</select>
-	
-	<select id="findMemIdByEmail" parameterType="str" resultType="str">
-    SELECT mem_id FROM account WHERE mem_email = #{mem_email}
-</select>
+
+	<update id="updatePicture">
+		UPDATE ACCOUNT
+		SET PICTURE = #{picture}
+		WHERE MEM_ID =
+		#{mem_id}
+	</update>
+
+	<select id="selectPasswordHashById" parameterType="string"
+		resultType="string">
+		SELECT MEM_PASS FROM ACCOUNT WHERE MEM_ID = #{mem_id}
+	</select>
+
+	<!-- 비밀번호 업데이트 -->
+	<update id="updatePassword">
+		UPDATE ACCOUNT SET MEM_PASS = #{mem_pass}
+		WHERE MEM_ID
+		= #{mem_id}
+	</update>
 </mapper>

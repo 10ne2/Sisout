@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Team-Mapper">
+
+
+ <insert id="insertTeam" parameterType="team">
+  INSERT INTO team (team_id, team_reader, project_id)
+  VALUES (#{team_id}, #{team_reader}, #{project_id})
+</insert>
+
+<select id="selectTeamSeqNext" resultType="str">
+  SELECT 'T' || LPAD(team_seq.NEXTVAL, 5, '0') FROM dual
+</select>
+</mapper>

@@ -1,16 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="LecClass-Mapper">
-<select id="selectLecClassList" resultType="lec_class">
-select *
-from lec_class
-order by lec_date desc
-</select>
-<select id="selectLecClassByID" parameterType="str" resultType="lec_class">
-select *
-from lec_class
-where lec_id=#{lec_id}
-</select>
+
+	<!-- 전체 강의 목록 -->
+	<select id="selectLecClassList" resultType="lec_class">
+		SELECT *
+		FROM DW001.LEC_CLASS
+		ORDER BY LEC_DATE DESC
+	</select>
+
+	<!-- 강의 상세 -->
+	<select id="selectLecClassByID" parameterType="str"
+		resultType="lec_class">
+		SELECT *
+		FROM DW001.LEC_CLASS
+		WHERE LEC_ID = #{lec_id}
+	</select>
+
+	<!-- 교수(MEM_ID)로 담당 강의 목록 조회 -->
+	<select id="selectLecClassByProfessorId" parameterType="str"
+		resultType="prolec">
+		SELECT
+		lc.LEC_ID AS lec_id,
+		lc.LEC_NAME AS lec_name
+		FROM DW001.LEC_CLASS lc
+		WHERE TRIM(lc.LEC_PROFES) = (
+		SELECT TRIM(p.PROFES_ID)
+		FROM DW001.PROFESSOR p
+		WHERE TRIM(p.MEM_ID) = TRIM(#{value})   <!-- 단일 파라미터 바인딩 -->
+		)
+		ORDER BY lc.LEC_NAME
+	</select>
+
+	<select id="selectLectureNameById" parameterType="str"
+		resultType="str">
+		SELECT LEC_NAME
+		FROM DW001.LEC_CLASS
+		WHERE LEC_ID = #{lec_id}
+	</select>
 </mapper>

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
-import com.camp_us.command.PageMaker;
+import com.camp_us.command.PageMakerWH;
 import com.camp_us.dto.MessageVO;
 
 public class MessageDAOImpl implements MessageDAO{
@@ -62,7 +62,7 @@ private SqlSession session;
 	
 	// 받은메일함
 	@Override
-	public List<MessageVO> selectSearchReceiveMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchReceiveMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -76,7 +76,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> selectSearchReceiveImpMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchReceiveImpMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -90,7 +90,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> selectSearchReceiveReadMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchReceiveReadMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -104,7 +104,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> selectSearchReceiveLockMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchReceiveLockMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -118,7 +118,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchReceiveMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchReceiveMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -128,7 +128,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchReceiveImpMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchReceiveImpMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -139,7 +139,7 @@ private SqlSession session;
 	}
 	
 	@Override
-	public int selectSearchReceiveReadMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchReceiveReadMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -149,7 +149,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchReceiveLockMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchReceiveLockMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -163,7 +163,7 @@ private SqlSession session;
 	
 	//보낸 메일
 	@Override
-	public List<MessageVO> selectSearchSendMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchSendMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -177,7 +177,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> selectSearchSendImpMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchSendImpMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -191,7 +191,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> selectSearchSendLockMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> selectSearchSendLockMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -205,7 +205,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchSendMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchSendMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -215,7 +215,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchSendImpMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchSendImpMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -225,7 +225,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectSearchSendLockMailListCount(PageMaker pageMaker, String mem_id) throws SQLException {
+	public int selectSearchSendLockMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		dataMap.put("keyword", pageMaker.getKeyword());
 		dataMap.put("mem_id", mem_id);
@@ -239,7 +239,7 @@ private SqlSession session;
 	
 	// 휴지통
 	@Override
-	public List<MessageVO> selectWasteMailList(PageMaker pageMaker, String mem_id) throws SQLException{
+	public List<MessageVO> selectWasteMailList(PageMakerWH pageMaker, String mem_id) throws SQLException{
 		int offset = pageMaker.getStartRow()-1;
 		int limit = pageMaker.getPerPageNum();
 		RowBounds bounds = new RowBounds(offset,limit);
@@ -249,7 +249,7 @@ private SqlSession session;
 		return mailList;
 	}
 	@Override
-	public int selectWasteMailListCount(PageMaker pageMaker, String mem_id) throws SQLException{
+	public int selectWasteMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException{
 		int mailList = session.selectOne("Message-Mapper.selectWasteMailListCount", mem_id);
 		
 		return mailList;

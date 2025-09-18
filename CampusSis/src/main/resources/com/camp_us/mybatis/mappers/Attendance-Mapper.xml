@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AttendanceMapper">
+	<insert id="insertAttendance" parameterType="AttendanceVO">
+		INSERT INTO ATTENDANCE (A_NO, A_DETAIL, LECS_ID, A_CAT, MOD_PENDING)
+		VALUES (#{aNo}, #{aDetail}, #{lecsId}, #{aCat}, #{modPending})
+	</insert>
+	
+	<select id="selectAttendance" resultType="AttendanceVO">
+		SELECT A_DETAIL AS aDetail, PROGRESS AS progress
+		FROM ATTENDANCE 
+		WHERE A_NO = #{aNo}
+	</select>
+
+	<update id="updateAttendance" parameterType="AttendanceVO">
+		UPDATE ATTENDANCE
+		SET A_DETAIL = #{aDetail},
+		PROGRESS = #{progress, jdbcType=VARCHAR}
+		WHERE A_NO = #{aNo}
+	</update>
+	
+	<update id="updateAttendanceANO" parameterType="AttendanceVO">
+		UPDATE ATTENDANCE
+		SET A_NO = #{aNo},
+		PROGRESS = #{progress, jdbcType=VARCHAR}
+		WHERE A_NO = #{aNo}
+	</update>
+</mapper>

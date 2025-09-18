@@ -25,7 +25,8 @@ public interface MemberService {
 
 	// 권한수정
 	void modifyAuthority(String mem_id, List<String> mem_auth) throws SQLException;
-	
-	String findMemIdByEmail(String mem_email) throws SQLException;
 
+	void updatePicture(String memId, String picture);
+	
+	boolean changePassword(String memId, String currentPw, String newPw) throws Exception;
 }

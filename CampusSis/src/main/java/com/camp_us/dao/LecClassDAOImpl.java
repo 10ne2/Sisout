@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
 import com.camp_us.dto.LecClassVO;
+import com.camp_us.dto.ProLecVO;
 
 public class LecClassDAOImpl implements LecClassDAO{
 	private SqlSession session;
@@ -21,6 +22,11 @@ public class LecClassDAOImpl implements LecClassDAO{
 	@Override
 	public LecClassVO selectLecClassById(String lec_id) throws SQLException {
 			return session.selectOne("LecClass-Mapper.selectLecClassByID",lec_id);
+	}
+
+	@Override
+	public List<ProLecVO> selectLecClassByProfessorId(String mem_id) throws SQLException {
+		return session.selectList("LecClass-Mapper.selectLecClassByProfessorId",mem_id);
 	}
 
 }

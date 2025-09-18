@@ -8,20 +8,43 @@
 		<typeAlias type="java.lang.String" alias="str"/>
 		<typeAlias type="java.lang.Integer" alias="int"/>
 		
+		<typeAlias type="com.camp_us.dto.AcademicVO" alias="academic"/>
 		<typeAlias type="com.camp_us.dto.MemberVO" alias="account"/>
-		<typeAlias type="com.camp_us.dto.MenuVO" alias="menu"/>
+		<typeAlias type="com.camp_us.dto.HomeworkVO" alias="homework"/>
+		<typeAlias type="com.camp_us.dto.HomeworkSubmitVO" alias="homeworksubmit"/>
+		<typeAlias type="com.camp_us.dto.StuLecVO" alias="stuLec"/>
+		<typeAlias type="com.camp_us.dto.ProfessorVO" alias="professor"/>
+		<typeAlias type="com.camp_us.dto.ProLecVO" alias="prolec"/>
 		<typeAlias type="com.camp_us.dto.LecClassVO" alias="lec_class"/>
+		<typeAlias type="com.camp_us.dto.MemberVO" alias="member"/>
+		<typeAlias type="com.camp_us.dto.ProjectVO" alias="project"/>
+		<typeAlias type="com.camp_us.dto.TeamVO" alias="team"/>
+		<typeAlias type="com.camp_us.dto.TeamMemberVO" alias="teamMember"/>
+		<typeAlias type="com.camp_us.dto.ProjectListVO" alias="projectlist"/>
+		<typeAlias type="com.camp_us.dto.EditBfProjectVO" alias="editBfProject"/>
+		<typeAlias type="com.camp_us.dto.RoadMapVO" alias="roadmap"/>
+		<typeAlias type="com.camp_us.dto.EvaluationVO" alias="evaluation"/>
+		<typeAlias type="com.camp_us.dto.AttachVO" alias="attach"/>
+		<typeAlias type="com.camp_us.command.PageMakerStu" alias="pageMakerStu"/>
+		<typeAlias type="com.camp_us.command.PageMakerPro" alias="pageMakerPro"/>
+		<typeAlias type="com.camp_us.dto.BoardVO" alias="board"/>
 		<typeAlias type="com.camp_us.dto.UnsubmitHomeworkVO" alias="unsubmithw"/>
 		<typeAlias type="com.camp_us.dto.ComingLecVO" alias="cominglec"/>
 		<typeAlias type="com.camp_us.dto.OtherDashStuVO" alias="otherdashstu"/>
-		<typeAlias type="com.camp_us.dto.StuLecVO" alias="stuLec"/>
 		<typeAlias type="com.camp_us.dto.MessageVO" alias="message"/>
 		<typeAlias type="com.camp_us.dto.MailFileVO" alias="mfile"/>
-		
+		<typeAlias type="com.camp_us.dto.LecVideoVO" alias="LecVideoVO"/>
+		<typeAlias type="com.camp_us.dto.AttendanceVO" alias="AttendanceVO"/>
+		<typeAlias type="com.camp_us.dto.HwEventVO" alias="hwevent"/>
 		<typeAlias type="com.camp_us.command.PageMaker" alias="pageMaker"/>
+		<typeAlias type="com.camp_us.command.PageMakerMJ" alias="pageMakerMJ"/>
+		<typeAlias type="com.camp_us.command.PageMakerWH" alias="pageMakerWH"/>
+		<typeAlias type="com.camp_us.dto.LecNoticeVO" alias="lecnotice"/>
+		<typeAlias type="com.camp_us.dto.LectureListVO" alias="lectureList"/>
+		<typeAlias type="com.camp_us.dto.LectureVO" alias="lecture"/>
 	</typeAliases>
 </configuration>
- 
+
 
 
 

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Project-Mapper">
+
+<sql id="search">
+    <if test="keyword != null and keyword != ''">
+        AND samester LIKE '%' || #{keyword} || '%'
+    </if>
+        <if test="project_name != null and project_name != ''">
+        AND project_name LIKE '%' || #{project_name} || '%'
+    </if>
+    <if test="project_stdate != null and project_stdate != '' and project_endate != null and project_endate != ''">
+        AND project_stdate &lt;= TO_DATE(#{project_endate}, 'YYYY-MM-DD')
+        AND project_endate &gt;= TO_DATE(#{project_stdate}, 'YYYY-MM-DD')
+    </if>
+    <if test="(project_stdate != null and project_stdate != '') and (project_endate == null or project_endate == '')">
+        AND project_endate &gt;= TO_DATE(#{project_stdate}, 'YYYY-MM-DD')
+    </if>
+    <if test="(project_endate != null and project_endate != '') and (project_stdate == null or project_stdate == '')">
+        AND project_stdate &lt;= TO_DATE(#{project_endate}, 'YYYY-MM-DD')
+    </if>
+</sql>
+	<select id="selectsearchProjectList" resultType="projectlist">
+	select *
+	from stu_project
+	WHERE mem_id = #{mem_id}
+	<include refid="search" />
+	order by project_endate desc
+	</select>
+	<select id="selectsearchProjectListCount" resultType="int">
+	select 
+	count (*)
+	from stu_project
+	where mem_id = #{mem_id}
+	<include refid="search" />
+	</select>
+	<select id="selectProjectByProjectId" resultType="projectlist">
+	select *
+	from stu_project
+	where project_id = #{project_id}
+	</select>
+<select id="selectsearchProjectListpro" resultType="projectlist">
+  SELECT * FROM (
+    SELECT
+      p.*,
+      ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY project_endate DESC) rn
+    FROM pro_project p
+    WHERE profes_id = #{mem_id}
+    <include refid="search" />
+  )
+  
+  WHERE rn = 1
+  ORDER BY project_endate DESC
+</select>
+<select id="selectModifyRequestProjectList" resultType="projectlist" parameterType="str">
+  SELECT * FROM (
+    SELECT
+      p.*,
+      ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY project_endate DESC) rn
+    FROM pro_project p
+    WHERE profes_id = #{mem_id}
+      AND EXISTS (
+        SELECT 1 FROM edit_before eb
+        WHERE eb.project_id = p.project_id
+          AND eb.edit_status = '요청중'
+      )
+  )
+  WHERE rn = 1
+  ORDER BY project_endate DESC
+</select>
+
+<select id="selectModifyRequestProjectListCount" resultType="int" parameterType="str">
+  SELECT COUNT(DISTINCT p.project_id)
+  FROM pro_project p
+  WHERE profes_id = #{mem_id}
+    AND EXISTS (
+      SELECT 1 FROM edit_before eb
+      WHERE eb.project_id = p.project_id
+        AND eb.edit_status = '요청중'
+    )
+</select>
+	<select id="selectsearchProjectListCountpro" resultType="int">
+  select count(distinct project_id)
+  from pro_project
+  where profes_id = #{mem_id}
+  <include refid="search" />
+</select>
+<select id="selectProjectList" resultType="project">
+	select p.*
+	from project p
+	join team_member tm on p.team_id = tm.team_id
+	join account a on tm.team_member = a.mem_id
+	where mem_id = #{mem_id}
+	
+</select>
+
+<!-- 교수 조회 -->
+<select id="selectProfessorList" resultType="account">
+    SELECT mem_id, mem_name, picture
+    FROM account
+    WHERE mem_auth = 'ROLE02'
+</select>
+<!-- 학생 조회 -->
+<select id="selectTeamMemberList" resultType="account">
+   SELECT mem_id, mem_name, picture
+  FROM account
+  WHERE mem_auth = 'ROLE01'
+</select>
+<select id="selectMemberListById" parameterType="str" resultType="account">
+	select mem_id, mem_name, picture
+	from account
+	where mem_id=#{mem_id}
+
+</select>
+<insert id="insertTeamMemberList" parameterType="str">
+  insert into team_member(
+  team_id, team_member)
+  values
+  (#{team_id},#{team_member})
+</insert>
+<insert id="insertTeamLeader" parameterType="str">
+	insert into team(
+	team_id, team_leader)
+	values
+	(#{team_id},#{team_leader})	
+</insert>
+<insert id="insertProject">
+	insert into project(
+	project_id,project_name,project_desc,project_stdate,project_endate,profes_id,team_id,samester)
+	values(
+	#{project_id},#{project_name},#{project_desc},#{project_stdate, jdbcType=TIMESTAMP},#{project_endate, jdbcType=TIMESTAMP},
+	#{profes_id},#{team_id},#{samester}
+	) 
+</insert>
+  <!-- 프로젝트 ID 생성 (시퀀스) -->
+  <select id="selectProjectSeqNext" resultType="str">
+    SELECT 'P' || LPAD(project_seq.NEXTVAL, 5, '0') FROM dual
+  </select>
+
+  <!-- 팀 ID 생성 (시퀀스) -->
+  <select id="selectTeamSeqNext" resultType="str">
+    SELECT 'T' || LPAD(team_seq.NEXTVAL, 5, '0') FROM dual
+  </select>
+  	<select id="selectTeamProfessor" resultType="projectlist">
+	select project_id, profes_id, profes_name
+	from pro_project
+	where project_id = #{project_id}
+	</select>
+	<select id="selectTeamMembers" resultType="str">
+	select mem_name
+	from pro_project
+	where project_id = #{project_id}
+	</select>
+	<select id="selectTeamleader" resultType="projectlist">
+	select DISTINCT project_id, team_leader, leader_name
+	from pro_project
+    where project_id = #{project_id}
+	</select>
+	<insert id="insertEditBeforeProject" parameterType="editBfProject">
+    INSERT INTO EDIT_BEFORE (
+        BEFORE_ID,
+        PROJECT_ID,
+        TEAM_ID,
+        PROJECT_NAME,
+        PROJECT_STDATE,
+        PROJECT_ENDATE,
+        TEAM_MEMBER_IDS,
+        TEAM_MEMBER_NAMES,
+        SAMESTER,
+        team_leader,
+        LEADER_NAME,
+        edit_content
+    ) VALUES (
+    	#{before_id},
+        #{project_id},
+        #{team_id},
+        #{project_name},
+        #{project_stdate},
+        #{project_endate},
+        #{team_member_ids},
+        #{team_member_names},
+        #{samester},
+        #{team_leader},
+        #{leader_name},
+        #{edit_content}
+    )
+</insert>
+<select id="selectEditBeforeSeqNext" resultType="str">
+  SELECT 'E' || LPAD(EDIT_BEFORE_SEQ.NEXTVAL, 5, '0') FROM dual
+</select>
+<select id="selectEditProjectByProjectId" parameterType="str" resultType="editBfProject">
+    SELECT * FROM edit_before WHERE project_id = #{project_id}
+</select>
+<update id="updateProjectFromEdit" parameterType="editBfProject">
+    UPDATE PROJECT
+    SET PROJECT_NAME = #{project_name},
+        PROJECT_STDATE = #{project_stdate},
+        PROJECT_ENDATE = #{project_endate},
+        SAMESTER = #{samester},
+        LEADER_ID = #{leader_id},
+        LEADER_NAME = #{leader_name}
+    WHERE PROJECT_ID = #{project_id}
+</update>
+
+<delete id="deleteTeamMembers" parameterType="str">
+    DELETE FROM TEAM_MEMBER WHERE TEAM_ID = #{team_id}
+</delete>
+
+<insert id="insertTeamMembersFromEdit" parameterType="editBfProject">
+    INSERT INTO TEAM_MEMBER (TEAM_ID, TEAM_MEMBER)
+    <foreach collection="teamMemberIdsList" item="memberId" separator="union all">
+        SELECT #{team_id}, #{memberId} FROM dual
+    </foreach>
+</insert>
+<select id="selectEditStatusByProjectid" parameterType="str" resultType="str">
+  SELECT edit_status
+  FROM edit_before
+  WHERE project_id = #{project_id, jdbcType=VARCHAR }
+    AND edit_status = '요청중'
+</select>
+<delete id="deleteByTeamMemberId" parameterType="str">
+    DELETE FROM team_member
+    WHERE team_id = #{team_id}
+</delete>
+<update id="updateTeamLeader" parameterType="team">
+    UPDATE team
+    SET team_leader = #{team_leader}
+    WHERE team_id = #{team_id}
+</update>
+<insert id="insertTeamMember" parameterType="teamMember">
+    INSERT INTO team_member (team_id, team_member)
+    VALUES (#{team_id}, #{team_member})
+</insert>
+
+<update id="updateProject" parameterType="projectlist">
+    UPDATE project
+    SET 
+    project_name = #{project_name},
+    project_stdate = #{project_stdate},
+    project_endate = #{project_endate},
+    samester = #{samester}
+    WHERE project_id = #{project_id}
+</update>
+<delete id="deleteEditBefore" parameterType="str">
+  DELETE FROM edit_before WHERE before_id = #{before_id}
+</delete>
+<delete id="deleteTeamByTeamId" parameterType="str">
+delete from team where team_id = #{team_id}
+</delete>
+<update id="updateRoadMapStatus" parameterType="str"> UPDATE PROJECT SET RM_STATUS = '1' WHERE PROJECT_ID = #{PROJECT_ID} </update>
+</mapper>

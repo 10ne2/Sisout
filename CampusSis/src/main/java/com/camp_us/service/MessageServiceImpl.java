@@ -4,7 +4,9 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.camp_us.command.PageMaker;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.camp_us.command.PageMakerWH;
 import com.camp_us.dao.MailFileDAO;
 import com.camp_us.dao.MessageDAO;
 import com.camp_us.dto.MailFileVO;
@@ -101,7 +103,7 @@ public class MessageServiceImpl implements MessageService{
 	
 	// 받은메일함
 	@Override
-	public List<MessageVO> receiveMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> receiveMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchReceiveMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -118,7 +120,7 @@ public class MessageServiceImpl implements MessageService{
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> receiveImpList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> receiveImpList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchReceiveImpMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -134,7 +136,7 @@ public class MessageServiceImpl implements MessageService{
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> receiveReadList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> receiveReadList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchReceiveReadMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -150,7 +152,7 @@ public class MessageServiceImpl implements MessageService{
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> receiveLockList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> receiveLockList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchReceiveLockMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -170,7 +172,7 @@ public class MessageServiceImpl implements MessageService{
 	
 	// 보낸메일함
 	@Override
-	public List<MessageVO> sendMailList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> sendMailList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchSendMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -186,7 +188,7 @@ public class MessageServiceImpl implements MessageService{
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> sendImpList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> sendImpList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchSendImpMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -202,7 +204,7 @@ public class MessageServiceImpl implements MessageService{
 		return mailList;
 	}
 	@Override
-	public List<MessageVO> sendLockList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> sendLockList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectSearchSendLockMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -222,7 +224,7 @@ public class MessageServiceImpl implements MessageService{
 	
 	//휴지통
 	@Override
-	public List<MessageVO> wasteList(PageMaker pageMaker, String mem_id) throws SQLException {
+	public List<MessageVO> wasteList(PageMakerWH pageMaker, String mem_id) throws SQLException {
 		List<MessageVO> mailList = messageDAO.selectWasteMailList(pageMaker, mem_id);
 		
 		if(mailList != null) for(MessageVO mail : mailList) {
@@ -282,7 +284,7 @@ public class MessageServiceImpl implements MessageService{
 	public void updateSLock(int mail_id) throws SQLException{
 		messageDAO.updateSLock(mail_id);
 	}
-	@Override
+	@Transactional
 	public void updateWaste(int mail_id) throws SQLException{
 		messageDAO.updateWaste(mail_id);
 	}

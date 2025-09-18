@@ -2,102 +2,245 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
 	<!-- member.picture -->
 	<bean id="picturePath" 
 		  class="java.lang.String"
-		  c:value="${savePath.member.picture}" 		
-	/>	
+		  c:value="${savePath.member.picture}" />
 	<!-- summernote.image -->
-	<bean id="summernotePath"
-	      class="java.lang.String"
-	      c:value="${savePath.summernote.image}"
-	      />
-	<!-- mail files -->
-	<bean id="messageSavedFilePath"
-	      class="java.lang.String"
-	      c:value="${savePath.message.files}"
-	      />
-	<!-- mail files -->
-	<bean id="mailSavedFilePath"
-	      class="java.lang.String"
-	      c:value="${savePath.mail.files}"
-	      />      
-	      	
-	<bean id="memberDAO"
-	      class="com.camp_us.dao.MemberDAOImpl"
-	      c:session-ref="sqlSession"
-	      />
-	<bean id="menuDAO"
-		  class="com.camp_us.dao.MenuDAOImpl"
-		  c:session-ref="sqlSession"
-		  />
-	<bean id="lecClassDAO"
-		  class="com.camp_us.dao.LecClassDAOImpl"
-		  c:session-ref="sqlSession"
-		  />
-	<bean id="unsubmitHomeworkDAO"
-		  class="com.camp_us.dao.UnsubmitHomeworkDAOImpl"
-		  c:session-ref="sqlSession"
-	      />
-	<bean id="comingLecDAO"
-		  class="com.camp_us.dao.ComingLecDAOImpl"
-		  c:session-ref="sqlSession"     
-	      />
-	<bean id="otherDashStuDAO"
-		  class="com.camp_us.dao.OtherDashStuDAOImpl"
-		  c:session-ref="sqlSession"     
-	      />      
-	<bean id="stuLecDAO"
+	<bean id="summernotePath" 
+		  class="java.lang.String"
+		  c:value="${savePath.summernote.image}" />
+	<!-- pds files -->
+	<bean id="pdsSavedFilePath" 
+		  class="java.lang.String"
+		  c:value="${savePath.pds.files}" />
+	<!-- message.files -->
+	<bean id="messageSavedFilePath" 
+		  class="java.lang.String" 
+		  c:value="${savePath.message.files}"/>
+	<!-- log saved path -->
+	<bean id="logSavedPath" class="java.lang.String"
+		c:value="${savePath.log.files}" />
+
+	<bean id="memberDAO" 
+		  class="com.camp_us.dao.MemberDAOImpl"
+		  c:session-ref="sqlSession" />
+		  
+	<bean id="memberService"
+		class="com.camp_us.service.MemberServiceImpl"
+		c:memberDAO-ref="memberDAO" />
+
+	<bean id="homeworkDAO" class="com.camp_us.dao.HomeworkDAOImpl"
+		c:session-ref="sqlSession" />
+
+	<bean id="homeworkService"
+		  class="com.camp_us.service.HomeworkServiceImpl"
+		  c:homeworkDAO-ref="homeworkDAO" 
+		  c:summernotePath-ref="summernotePath" />
+		  
+	<bean id="stuLecDAO" 
 		  class="com.camp_us.dao.StuLecDAOImpl"
-		  c:session-ref="sqlSession"
-		  />
-	<bean id="mailFileDAO"
-		  class="com.camp_us.dao.MailFileDAOImpl"
-		  c:session-ref="sqlSession"
-		  />
-	<bean id="messageDAO"
-		  class="com.camp_us.dao.MessageDAOImpl"
-		  c:session-ref="sqlSession" 
-		  />	  
-	
-	
-	
-	
-	<bean id="messageService"
-		  class="com.camp_us.service.MessageServiceImpl"
-		  c:messageDAO-ref="messageDAO"
-		  c:summernotePath-ref="summernotePath"
-		  c:mailFileDAO-ref="mailFileDAO" 
-		  />
+		  c:session-ref="sqlSession" />
+		  
 	<bean id="stuLecService"
 		  class="com.camp_us.service.StuLecServiceImpl"
-		  c:stuLecDAO-ref="stuLecDAO"
-		  />      
-	<bean id="otherDashStuService"
-		  class="com.camp_us.service.OtherDashStuServiceImpl"
-		  c:otherDashStuDAO-ref="otherDashStuDAO"
-		  />     
-	<bean id="comingLecService"
-		  class="com.camp_us.service.ComingLecServiceImpl"
-		  c:comingLecDAO-ref="comingLecDAO"
-		  />
-	<bean id="unsubmitHomeworkService"
-		  class="com.camp_us.service.UnsubmitHomeworkServiceImpl"
-		  c:unsubmithomeworkDAO-ref="unsubmitHomeworkDAO"
-		  />      
-	<bean id="memberService"
-	      class="com.camp_us.service.MemberServiceImpl"
-	      c:memberDAO-ref="memberDAO"
-	      />
-	<bean id="menuService"
-		  class="com.camp_us.service.MenuServiceImpl"
-		  c:menuDAO-ref="menuDAO"
-		  />
+		  c:stuLecDAO-ref="stuLecDAO" />
+		  
+	<bean id="boardDAO" 
+		  class="com.camp_us.dao.BoardDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		
+
+	<bean id="homeworkMapper"
+		  class="org.mybatis.spring.mapper.MapperFactoryBean">
+		  <property 
+		    name="mapperInterface"
+		    value="com.camp_us.mapper.HomeworkMapper" />
+		  <property 
+		    name="sqlSessionFactory" 
+		    ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="homeworkSubmitDAO"
+		  class="com.camp_us.dao.HomeworkSubmitDAOImpl">
+		  <constructor-arg 
+		  ref="sqlSession" />
+	</bean>
+	
+	<bean id="homeworkSubmitService"
+		  class="com.camp_us.service.HomeworkSubmitServiceImpl">
+		  <constructor-arg 
+		  ref="homeworkSubmitDAO" />
+		  <constructor-arg 
+		  ref="homeworkDAO" />
+	</bean>
+
+	<bean id="homeworkSubmitMapper"
+		  class="org.mybatis.spring.mapper.MapperFactoryBean">
+		  <property 
+		  name="mapperInterface"
+		  value="com.camp_us.mapper.HomeworkSubmitMapper" />
+		  <property 
+		  name="sqlSessionFactory" 
+		  ref="sqlSessionFactory" />
+	</bean>
+	
 	<bean id="lecClassService"
 		  class="com.camp_us.service.LecClassServiceImpl"
-		  c:lecClassDAO-ref="lecClassDAO"
-		  />
+		  c:lecClassDAO-ref="lecClassDAO" />
+		
+	<bean id="lecClassDAO"
+		  class="com.camp_us.dao.LecClassDAOImpl"
+		  c:session-ref="sqlSession" />
+		  
+	<bean id="multipartResolver" 
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		  <property 
+		  name="defaultEncoding" 
+		  value="UTF-8"/>
+		  <property name="maxUploadSize" 
+		  value="52428800"/>
+		  
+	<!--  50MB  -->
+	</bean>
+	<!--  Reply DAO  -->
+	<bean id="replyDAO" 
+		  class="com.camp_us.dao.ReplyDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<!--  Reply Service  -->
+	<bean id="replyService" 
+		  class="com.camp_us.service.ReplyServiceImpl" 
+		  c:replyDAO-ref="replyDAO"/>
+
+	<!-- Notice -->
+	<bean id="noticeDAO" 
+		  class="com.camp_us.dao.NoticeDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="noticeService" 
+		  class="com.camp_us.service.NoticeServiceImpl" 
+		  c:noticeDAO-ref="noticeDAO"/>
+	
+	<!-- Dashboard -->
+	<bean id="dashboardService" 
+		  class="com.camp_us.service.DashboardServiceImpl">
+		  <constructor-arg 
+		  ref="dashboardDAO"/>
+	</bean>
+		
+	<bean id="roadMapSavedFilePath" 
+		  class="java.lang.String" 
+		  c:value="${savePath.roadMap.files}"/>
+		  
+	<bean id="projectDAO" 
+		  class="com.camp_us.dao.ProjectDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="teamDAO" 
+		  class="com.camp_us.dao.TeamDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="teamMemberDAO" 
+		  class="com.camp_us.dao.TeamMemberDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="roadMapDAO" 
+		  class="com.camp_us.dao.RoadMapDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="attachDAO" 
+		  class="com.camp_us.dao.AttachDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="projectService" 
+		  class="com.camp_us.service.ProjectServiceImpl" 
+		  c:projectDAO-ref="projectDAO"/>
+		  
+	<bean id="roadMapService" 
+		  class="com.camp_us.service.RoadMapServiceImpl" 
+		  c:roadMapDAO-ref="roadMapDAO" 
+		  c:summernotePath-ref="summernotePath" 
+		  c:attachDAO-ref="attachDAO"/>
+		  
+	<bean id="otherDashStuService" 
+		  class="com.camp_us.service.OtherDashStuServiceImpl" 
+		  c:otherDashStuDAO-ref="otherDashStuDAO"/>
+		  
+	<bean id="comingLecService" 
+		  class="com.camp_us.service.ComingLecServiceImpl" 
+		  c:comingLecDAO-ref="comingLecDAO"/>
+	<bean id="unsubmitHomeworkService" 
+		  class="com.camp_us.service.UnsubmitHomeworkServiceImpl" 
+		  c:unsubmithomeworkDAO-ref="unsubmitHomeworkDAO"/>
+		  
+	<bean id="mailFileDAO" 
+		  class="com.camp_us.dao.MailFileDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="messageDAO" 
+		  class="com.camp_us.dao.MessageDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="messageService" 
+		  class="com.camp_us.service.MessageServiceImpl" 
+		  c:messageDAO-ref="messageDAO" 
+		  c:summernotePath-ref="summernotePath" 
+		  c:mailFileDAO-ref="mailFileDAO"/>
+		  
+	<bean id="unsubmitHomeworkDAO" 
+		  class="com.camp_us.dao.UnsubmitHomeworkDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="comingLecDAO" 
+		  class="com.camp_us.dao.ComingLecDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="otherDashStuDAO" 
+		  class="com.camp_us.dao.OtherDashStuDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+
+		  
+	<bean id="lecVideoDAO" 
+		  class="com.camp_us.dao.LecVideoDAOImpl" 
+		  c:sqlSession-ref="sqlSession"/>
+		  
+	<bean id="lecVideoService" 
+		  class="com.camp_us.service.LecVideoServiceImpl" 
+		  c:videoDAO-ref="lecVideoDAO"/>
+		  
+	<bean id="attendanceDAO" 
+		  class="com.camp_us.dao.AttendanceDAOImpl" 
+		  c:sqlSession-ref="sqlSession"/>
+		  
+	<bean id="lectureListDAO" 
+		  class="com.camp_us.dao.LectureListDAOImpl" 
+		  c:sqlSession-ref="sqlSession"/>
+		  
+	<bean id="vidAttendanceService" 
+		  class="com.camp_us.service.VidAttendanceServiceImpl" 
+		  c:attendanceDAO-ref="attendanceDAO" 
+		  c:lectureListDAO-ref="lectureListDAO"/>
+		  
+	<bean id="lectureDAO" 
+		  class="com.camp_us.dao.LectureDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="lectureService" 
+		  class="com.camp_us.service.LectureServiceImpl" 
+		  c:lectureDAO-ref="lectureDAO" 
+		  p:uploadPath="${upload.final.path}"/>
+		  
+	<bean id="evaluationDAO" 
+		  class="com.camp_us.dao.EvaluationDAOImpl" 
+		  c:session-ref="sqlSession"/>
+		  
+	<bean id="evaluationService" 
+		  class="com.camp_us.service.EvaluationServiceImpl" 
+		  c:evaluationDAO-ref="evaluationDAO"/>
+		  
 </beans>
-
-

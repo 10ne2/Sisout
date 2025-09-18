@@ -119,7 +119,7 @@
 						<div class="card-footer">
 						<!-- pagination.jsp -->
 							<div <%-- style="display:${not empty wasteList ? 'visible':'none' } --%>">
-								<%@ include file="/WEB-INF/views/module/pagination.jsp" %>	
+								<%@ include file="/WEB-INF/views/module/paginationMail.jsp" %>	
 							</div>	    			
 	    				</div>
 					</div>

@@ -128,7 +128,7 @@
 			<version>${jackson.databind-version}</version>
 		</dependency>
 		<dependency>
-			<groupId>html-filer</groupId>
+			<groupId>html-filter</groupId>
 			<artifactId>XSS-filter</artifactId>
 			<version>1.0</version>
 		</dependency>

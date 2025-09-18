@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.camp_us.mybatis.mappers.LectureMapper">
+
+    <insert id="insertFinalPlan" parameterType="lecture">
+        UPDATE LEC_CLASS
+        SET LEC_ID=#{lec_id}, LEC_FILENAME=#{lec_filename}, LEC_FILEPATH=#{lec_filepath}, REGDATE=#{regdate}
+        WHERE LEC_ID = #{lec_id}
+    </insert>
+    
+<select id="selectFirstOne" resultType="lecture">
+        SELECT *
+        FROM LEC_CLASS
+        WHERE LEC_ID = #{lec_id}
+</select>
+
+  <select id="selectFilePathById" parameterType="str" resultType="str">
+    SELECT LEC_FILEPATH
+    FROM LEC_CLASS
+    WHERE LEC_ID = #{lec_id}
+  </select>
+
+</mapper>

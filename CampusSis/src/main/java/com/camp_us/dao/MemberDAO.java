@@ -1,8 +1,9 @@
-
 package com.camp_us.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.camp_us.dto.MemberVO;
 
@@ -24,5 +25,8 @@ public interface MemberDAO {
 	
 	void insertLastLogin(MemberVO vo) throws Exception;
 	
-	String findMemIdByEmail(String mem_email) throws SQLException;
+	void updatePicture(@Param("mem_id") String memId, @Param("picture") String picture);
+	
+	String selectPasswordHashById(String mem_id);
+	void updatePassword(String mem_id, String encodedPw);
 }

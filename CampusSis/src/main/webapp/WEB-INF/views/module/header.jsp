@@ -393,7 +393,8 @@ textarea:focus {
 <script src="<%=request.getContextPath() %>/resources/bootstrap/plugins/summernote/summernote-bs4.min.js"></script>
 <!-- 공통 -->
 <script src="<%=request.getContextPath() %>/resources/js/common.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <decorator:head />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+

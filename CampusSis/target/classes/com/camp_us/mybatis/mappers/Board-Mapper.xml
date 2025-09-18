@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Board-Mapper">
+
+<select id="selectBoardList"
+        parameterType="com.camp_us.command.PageMakerMJ"
+        resultType="board">
+  SELECT
+    b.BOARD_ID AS boardId,
+    b.BOARD_CAT AS boardCat,
+    b.BOARD_NAME AS boardName,
+    b.MEM_ID AS memId,
+    b.BOARD_DATE AS boardDate,
+    a.MEM_NAME AS memName
+  FROM BOARD b
+    JOIN ACCOUNT a ON b.MEM_ID = a.MEM_ID
+  <where>
+    <if test="category != null and category != ''">
+      b.BOARD_CAT = #{category}
+    </if>
+    <if test="keyword != null and keyword != ''">
+      <choose>
+        <when test="searchType.equals('title')">
+          AND b.BOARD_NAME LIKE '%' || #{keyword} || '%'
+        </when>
+        <when test="searchType.equals('writer')">
+          AND (b.MEM_ID LIKE '%' || #{keyword} || '%' OR a.MEM_NAME LIKE '%' || #{keyword} || '%')
+        </when>
+        <when test="searchType.equals('content')">
+          AND b.BOARD_DESC LIKE '%' || #{keyword} || '%'
+        </when>
+        <otherwise>
+          AND (
+            b.BOARD_NAME LIKE '%' || #{keyword} || '%'
+            OR b.MEM_ID LIKE '%' || #{keyword} || '%'
+            OR a.MEM_NAME LIKE '%' || #{keyword} || '%'
+            OR b.BOARD_DESC LIKE '%' || #{keyword} || '%'
+          )
+        </otherwise>
+      </choose>
+    </if>
+  </where>
+  ORDER BY b.BOARD_DATE DESC, b.BOARD_ID DESC
+</select>
+
+  <!-- 전체 게시글 수 조회 -->
+  <select id="getTotalCount"
+          parameterType="com.camp_us.command.PageMakerMJ"
+          resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD
+    <where>
+      <if test="category != null and category != ''">
+        BOARD_CAT = #{category}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        <choose>
+          <when test="searchType.equals('title')">
+            AND BOARD_NAME LIKE '%' || #{keyword} || '%'
+          </when>
+          <when test="searchType.equals('writer')">
+            AND MEM_ID LIKE '%' || #{keyword} || '%'
+          </when>
+          <when test="searchType.equals('content')">
+            AND BOARD_DESC LIKE '%' || #{keyword} || '%'
+          </when>
+          <otherwise>
+            AND (
+              BOARD_NAME LIKE '%' || #{keyword} || '%'
+              OR MEM_ID LIKE '%' || #{keyword} || '%'
+              OR BOARD_DESC LIKE '%' || #{keyword} || '%'
+            )
+          </otherwise>
+        </choose>
+      </if>
+    </where>
+  </select>
+
+<select id="selectBoardByNo"
+        parameterType="str"
+        resultType="board">
+  SELECT
+    b.BOARD_ID AS boardId,
+    b.BOARD_CAT AS boardCat,
+    b.BOARD_NAME AS boardName,
+    b.MEM_ID AS memId,
+    b.BOARD_DATE AS boardDate,
+    b.BOARD_DESC AS boardDesc,
+    b.POFILE_NAME AS pfileName,
+    b.POFILE_DETAIL AS pfileDetail,
+    a.MEM_NAME AS memName
+  FROM BOARD b
+  JOIN ACCOUNT a ON b.MEM_ID = a.MEM_ID
+  WHERE b.BOARD_ID = #{boardId}
+</select>
+
+
+  <!-- 게시글 등록 -->
+  <insert id="insertBoard" parameterType="board">
+    INSERT INTO BOARD (
+      BOARD_ID,
+      BOARD_CAT,
+      BOARD_NAME,
+      MEM_ID,
+      BOARD_DATE,
+      BOARD_DESC,
+      POFILE_NAME,
+      POFILE_DETAIL,
+      BOARD_MOD
+    ) VALUES (
+      SEQ_BOARD_ID.NEXTVAL,
+      #{boardCat},
+      #{boardName},
+      #{memId},
+      SYSDATE,
+      #{boardDesc},
+      #{pfileName, jdbcType=VARCHAR},
+      #{pfileDetail, jdbcType=VARCHAR},
+      NULL
+    )
+  </insert>
+
+  <!-- 게시글 수정 -->
+  <update id="updateBoard" parameterType="board">
+  UPDATE BOARD
+  SET
+    BOARD_CAT = #{boardCat, jdbcType=VARCHAR},
+    BOARD_NAME = #{boardName, jdbcType=VARCHAR},
+    BOARD_DESC = #{boardDesc, jdbcType=VARCHAR},
+    POFILE_NAME = #{pfileName, jdbcType=VARCHAR},
+    POFILE_DETAIL = #{pfileDetail, jdbcType=VARCHAR},
+    BOARD_MOD = SYSDATE
+  WHERE BOARD_ID = #{boardId}
+</update>
+<!-- 게시글 삭제 전 댓글 먼저 삭제 -->
+<delete id="deleteRepliesByBoardId" parameterType="str">
+    DELETE FROM POST_RE WHERE BOARD_ID = #{boardId}
+</delete>
+
+<!-- 게시글 삭제 -->
+<delete id="deleteBoard" parameterType="str">
+    DELETE FROM BOARD WHERE BOARD_ID = #{boardId}
+</delete>
+
+
+
+</mapper>

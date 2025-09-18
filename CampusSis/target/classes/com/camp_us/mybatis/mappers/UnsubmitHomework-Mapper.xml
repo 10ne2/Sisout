@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="UnsubmitHomework-Mapper">
-	<select id="selectUnsubmitHomework" parameterType="String"
+	<select id="selectUnsubmitHomework" parameterType="str"
 		resultType="unsubmithw">
 		SELECT
 		h.hw_name, h.hw_enddate, l.lec_name, a.mem_name,

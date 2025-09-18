@@ -7,9 +7,9 @@ public class LecClassVO {
 	private String lec_name;
 	private Date lec_date;
 	private String lec_desc;
-	private String point;
+	private String lec_point;
 	private String lec_evalway;
-	private String profes;
+	private String lec_profes;
 	public String getLec_id() {
 		return lec_id;
 	}
@@ -34,24 +34,25 @@ public class LecClassVO {
 	public void setLec_desc(String lec_desc) {
 		this.lec_desc = lec_desc;
 	}
-	public String getPoint() {
-		return point;
-	}
-	public void setPoint(String point) {
-		this.point = point;
-	}
 	public String getLec_evalway() {
 		return lec_evalway;
 	}
 	public void setLec_evalway(String lec_evalway) {
 		this.lec_evalway = lec_evalway;
 	}
-	public String getProfes() {
-		return profes;
+	public String getLec_point() {
+		return lec_point;
 	}
-	public void setProfes(String profes) {
-		this.profes = profes;
+	public void setLec_point(String lec_point) {
+		this.lec_point = lec_point;
 	}
+	public String getLec_profes() {
+		return lec_profes;
+	}
+	public void setLec_profes(String lec_profes) {
+		this.lec_profes = lec_profes;
+	}
+
 	
 	
 }

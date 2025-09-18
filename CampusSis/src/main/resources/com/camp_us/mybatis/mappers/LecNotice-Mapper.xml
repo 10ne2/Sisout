@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LecNoticeMapper">
+
+  <!-- 전체 개수 (검색 포함) -->
+  <select id="getTotalCount"
+        parameterType="pageMakerMJ"
+        resultType="int">
+  SELECT COUNT(*)
+  FROM LEC_NOTICE
+  <where>
+    <!-- ★ 강의 필터 -->
+    <if test="lecId != null and lecId != ''">
+      AND LEC_ID = #{lecId}
+    </if>
+
+    <if test="keyword != null and keyword != ''">
+      <choose>
+        <when test="searchType == 'title'">
+          AND INSTR(LECNOTICE_NAME, #{keyword}) > 0
+        </when>
+        <when test="searchType == 'writer'">
+          AND INSTR(PROFES_ID, #{keyword}) > 0
+        </when>
+        <when test="searchType == 'content'">
+          AND INSTR(LECNOTICE_DESC, #{keyword}) > 0
+        </when>
+        <otherwise>
+          AND (
+            INSTR(LECNOTICE_NAME, #{keyword}) > 0
+            OR INSTR(PROFES_ID, #{keyword}) > 0
+            OR INSTR(LECNOTICE_DESC, #{keyword}) > 0
+          )
+        </otherwise>
+      </choose>
+    </if>
+  </where>
+</select>
+
+  <!-- (옵션) 단순 전체 목록 -->
+  <select id="selectLecNoticeList" resultType="lecnotice">
+    SELECT
+      LECNOTICE_ID   AS lecNoticeId,
+      LEC_ID         AS lecId,
+      PROFES_ID      AS profesId,
+      LECNOTICE_NAME AS lecNoticeName,
+      LECNOTICE_DATE AS lecNoticeDate,
+      LECNOTICE_DESC AS lecNoticeDesc,
+      FILE_NAME      AS fileName,
+      FILE_DETAIL    AS fileDetail,
+      VIEW_CNT       AS viewCnt
+    FROM LEC_NOTICE
+    ORDER BY LECNOTICE_DATE DESC
+  </select>
+
+  <!-- 페이징 목록 (검색 포함) -->
+  <select id="getLecNoticeList"
+        parameterType="pageMakerMJ"
+        resultType="lecnotice">
+  SELECT *
+  FROM (
+    SELECT ROWNUM AS rnum, inner.*
+    FROM (
+      SELECT
+        LECNOTICE_ID   AS lecNoticeId,
+        LEC_ID         AS lecId,
+        PROFES_ID      AS profesId,
+        LECNOTICE_NAME AS lecNoticeName,
+        LECNOTICE_DATE AS lecNoticeDate,
+        LECNOTICE_DESC AS lecNoticeDesc,
+        FILE_NAME      AS fileName,
+        FILE_DETAIL    AS fileDetail,
+        VIEW_CNT       AS viewCnt
+      FROM LEC_NOTICE
+      <where>
+        <!-- ★ 강의 필터 -->
+        <if test="lecId != null and lecId != ''">
+          AND LEC_ID = #{lecId}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+          <choose>
+            <when test="searchType == 'title'">
+              AND INSTR(LECNOTICE_NAME, #{keyword}) > 0
+            </when>
+            <when test="searchType == 'writer'">
+              AND INSTR(PROFES_ID, #{keyword}) > 0
+            </when>
+            <when test="searchType == 'content'">
+              AND INSTR(LECNOTICE_DESC, #{keyword}) > 0
+            </when>
+            <otherwise>
+              AND (
+                INSTR(LECNOTICE_NAME, #{keyword}) > 0
+                OR INSTR(PROFES_ID, #{keyword}) > 0
+                OR INSTR(LECNOTICE_DESC, #{keyword}) > 0
+              )
+            </otherwise>
+          </choose>
+        </if>
+      </where>
+      ORDER BY LECNOTICE_DATE DESC, TO_NUMBER(LECNOTICE_ID) DESC
+    ) inner
+    WHERE ROWNUM &lt;= #{endRow}
+  )
+  WHERE rnum &gt;= #{startRow}
+</select>
+
+  <!-- 상세 -->
+  <select id="selectLecNoticeById"
+          parameterType="str"
+          resultType="lecnotice">
+    SELECT
+      LECNOTICE_ID   AS lecNoticeId,
+      LEC_ID         AS lecId,
+      PROFES_ID      AS profesId,
+      LECNOTICE_NAME AS lecNoticeName,
+      LECNOTICE_DATE AS lecNoticeDate,
+      LECNOTICE_DESC AS lecNoticeDesc,
+      FILE_NAME      AS fileName,
+      FILE_DETAIL    AS fileDetail,
+      VIEW_CNT       AS viewCnt
+    FROM LEC_NOTICE
+    WHERE LECNOTICE_ID = #{lecNoticeId}
+  </select>
+
+  <!-- 등록 -->
+  <insert id="insertLecNotice" parameterType="lecnotice">
+    INSERT INTO LEC_NOTICE (
+      LECNOTICE_ID, LEC_ID, PROFES_ID, LECNOTICE_NAME, LECNOTICE_DATE,
+      LECNOTICE_DESC, FILE_NAME, FILE_DETAIL, VIEW_CNT
+    ) VALUES (
+      #{lecNoticeId}, #{lecId}, #{profesId}, #{lecNoticeName},
+      #{lecNoticeDate, jdbcType=TIMESTAMP},
+      #{lecNoticeDesc}, #{fileName}, #{fileDetail}, 0
+    )
+  </insert>
+
+  <!-- 수정 -->
+  <update id="updateLecNotice" parameterType="lecnotice">
+    UPDATE LEC_NOTICE
+    SET
+      LEC_ID = #{lecId},
+      PROFES_ID = #{profesId},
+      LECNOTICE_NAME = #{lecNoticeName},
+      LECNOTICE_DATE = #{lecNoticeDate},
+      LECNOTICE_DESC = #{lecNoticeDesc},
+      FILE_NAME = #{fileName},
+      FILE_DETAIL = #{fileDetail}
+    WHERE LECNOTICE_ID = #{lecNoticeId}
+  </update>
+
+  <!-- 조회수 증가 -->
+  <update id="updateViewCount" parameterType="str">
+  UPDATE LEC_NOTICE
+  SET VIEW_CNT = NVL(VIEW_CNT, 0) + 1
+  WHERE LECNOTICE_ID = #{value}
+</update>
+
+  <!-- 삭제 -->
+  <delete id="deleteLecNotice" parameterType="str">
+    DELETE FROM LEC_NOTICE
+    WHERE LECNOTICE_ID = #{lecNoticeId}
+  </delete>
+
+  <!-- 최대 ID -->
+  <select id="getMaxLecNoticeId" resultType="int">
+    SELECT NVL(MAX(TO_NUMBER(LECNOTICE_ID)), 0)
+    FROM LEC_NOTICE
+    WHERE REGEXP_LIKE(LECNOTICE_ID, '^[0-9]+$')
+  </select>
+  
+  <!-- LecNotice-Mapper.xml 에 추가 -->
+<select id="selectProfesIdByMemId" parameterType="str" resultType="str">
+  SELECT PROFES_ID
+  FROM PROFESSOR
+  WHERE MEM_ID = #{memId}
+</select>
+
+<select id="countProLecByIds" parameterType="map" resultType="int">
+  SELECT COUNT(*)
+  FROM PRO_LEC
+  WHERE PROFES_ID = #{profesId}
+    AND LEC_ID    = #{lecId}
+</select>
+
+</mapper>

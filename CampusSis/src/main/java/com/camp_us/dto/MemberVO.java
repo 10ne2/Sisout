@@ -1,12 +1,7 @@
 package com.camp_us.dto;
 
-
-
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
-
 
 public class MemberVO {
 	private String mem_id;
@@ -20,6 +15,8 @@ public class MemberVO {
     private String mem_sus;
     private String mem_auth;
     private String picture;
+    private Date birthDate;
+    
     public String getPicture() {
 		return picture;
 	}
@@ -92,6 +89,12 @@ public class MemberVO {
 	}
 	public void setMem_auth(String mem_auth) {
 		this.mem_auth = mem_auth;
+	}
+	public Date getBirthDate() {
+		return birthDate;
+	}
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 	
 	

@@ -18,7 +18,7 @@ public class OtherDashStuVO {
 	private String cfIsNew;
 	private Date classDate;
 	private String classDateStr;
-	private int attendanceStatus;
+	private String attendanceStatus;
 	private int rate_no;
 	private int rate_late;
 	private int rate_ok;
@@ -108,10 +108,10 @@ public class OtherDashStuVO {
 	public void setClassDateStr(String classDateStr) {
 		this.classDateStr = classDateStr;
 	}
-	public int getAttendanceStatus() {
+	public String getAttendanceStatus() {
 		return attendanceStatus;
 	}
-	public void setAttendanceStatus(int attendanceStatus) {
+	public void setAttendanceStatus(String attendanceStatus) {
 		this.attendanceStatus = attendanceStatus;
 	}
 	public int getRate_no() {

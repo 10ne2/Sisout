@@ -16,7 +16,7 @@ import com.camp_us.service.ComingLecService;
 import com.camp_us.service.UnsubmitHomeworkService;
 
 @Controller
-@RequestMapping("/lecturePro")
+@RequestMapping("/lecDashPro")
 public class DashBoardProController {
 	
 	@Autowired

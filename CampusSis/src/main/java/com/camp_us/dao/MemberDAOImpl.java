@@ -76,12 +76,23 @@ public class MemberDAOImpl implements MemberDAO{
 		return session.selectList("Member-Mapper.selectMemberList");
 	}
 
-
 	@Override
-	public String findMemIdByEmail(String mem_email) throws SQLException {
-		return session.selectOne("Member-Mapper.findMemIdByEmail",mem_email);
+    public void updatePicture(String memId, String picture) {
+        session.update("Member-Mapper.updatePicture", Map.of("mem_id", memId, "picture", picture));
+    }
+	
+	@Override
+	public String selectPasswordHashById(String mem_id) {
+	    return session.selectOne("Member-Mapper.selectPasswordHashById", mem_id);
 	}
 
+	@Override
+	public void updatePassword(String mem_id, String encodedPw) {
+	    Map<String,Object> p = new HashMap<>();
+	    p.put("mem_id", mem_id);
+	    p.put("mem_pass", encodedPw);
+	    session.update("Member-Mapper.updatePassword", p);
+	}
 	
 	
 }

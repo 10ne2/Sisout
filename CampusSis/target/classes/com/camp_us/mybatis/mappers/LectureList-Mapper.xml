@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LectureListMapper">
+
+    <select id="getStudentMemIdsByLecId" parameterType="str" resultType="str">
+        SELECT MEM_ID FROM LECTURE_LIST WHERE LEC_ID = #{lecId}
+    </select>
+
+    <select id="getLecsIdByLecIdAndMemId" resultType="str">
+        SELECT LECS_ID FROM LECTURE_LIST WHERE LEC_ID = #{lecId} AND MEM_ID = #{memId}
+    </select>
+    
+    <select id="getStudentsByLecture" resultType="lectureList">
+    	SELECT lecs_id AS lecsId, mem_id AS memId
+    	FROM LECTURE_LIST
+    	WHERE lec_id = #{lecId}
+    </select>
+
+</mapper>

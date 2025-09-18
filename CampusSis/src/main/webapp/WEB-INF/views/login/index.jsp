@@ -97,15 +97,15 @@
 <body>
 <div class="container">
     <div class="logo-section">
-        <img src="${ctx}/resources/images/campusLogo.png" alt="Campus Logo">
+        <img src="<%=request.getContextPath() %>/resources/bootstrap/dist/img/Camp_usLogo.png" alt="Campus Logo">
     </div>
     <div class="login-section">
         <h2>LOGIN</h2>
         <p>회원님의 아이디와 비밀번호를 정확히 입력해주세요.</p>
         <form method="post" action="${ctx}/login/index/post" class="form-box">
         	<input name="retUrl" value="${retUrl}" type="hidden"/>
-            <input type="text" name="id" placeholder="ID" required value="19800101" />
-            <input type="password" name="pwd" placeholder="PASSWORD" required value="19800101" />
+            <input type="text" name="id" placeholder="ID" required value="20220001" />
+            <input type="password" name="pwd" placeholder="PASSWORD" required value="mimi1234"/>
             <div class="forgot">
                 <span>비밀번호를 잊어버리셨나요?</span>
                 <a href="login/find-password">비밀번호 찾기</a>

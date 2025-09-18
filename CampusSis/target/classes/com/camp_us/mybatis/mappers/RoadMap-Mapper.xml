@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoadMap-Mapper">
+
+<sql id="search">
+	<if test="rm_category != null and rm_category != ''" >
+		and rm_category like '%'||#{rm_category}||'%'			
+	</if>
+    <if test="keyword != null and keyword != ''">
+        AND samester LIKE '%' || #{keyword} || '%'
+    </if>
+        <if test="rm_name != null and rm_name != ''">
+        AND rm_name LIKE '%' || #{rm_name} || '%'
+    </if>
+    <if test="project_name != null and project_name != ''">
+        AND project_name LIKE '%' || #{project_name} || '%'
+    </if>
+    <if test="project_stdate != null and project_stdate != '' and project_endate != null and project_endate != ''">
+        AND project_stdate &lt;= TO_DATE(#{project_endate}, 'YYYY-MM-DD')
+        AND project_endate &gt;= TO_DATE(#{project_stdate}, 'YYYY-MM-DD')
+    </if>
+    <if test="(project_stdate != null and project_stdate != '') and (project_endate == null or project_endate == '')">
+        AND project_endate &gt;= TO_DATE(#{project_stdate}, 'YYYY-MM-DD')
+    </if>
+    <if test="(project_endate != null and project_endate != '') and (project_stdate == null or project_stdate == '')">
+        AND project_stdate &lt;= TO_DATE(#{project_endate}, 'YYYY-MM-DD')
+    </if>
+    <!-- 시작일과 종료일 둘 다 있는 경우 -->
+	<if test="rm_stdate != null and rm_stdate != '' and rm_endate != null and rm_endate != ''">
+    AND rm_regdate BETWEEN TO_DATE(#{rm_stdate}, 'YYYY-MM-DD')
+                       AND TO_DATE(#{rm_endate}, 'YYYY-MM-DD')
+	</if>
+	<if test="rm_stdate != null and rm_stdate != '' and (rm_endate == null or rm_endate == '')">
+	    AND rm_regdate &gt;= TO_DATE(#{rm_stdate}, 'YYYY-MM-DD')
+	</if>
+	<if test="rm_endate != null and rm_endate != '' and (rm_stdate == null or rm_stdate == '')">
+	    AND rm_regdate &lt;= TO_DATE(#{rm_endate}, 'YYYY-MM-DD')
+	</if>
+<if test="eval_status != null and eval_status != ''">
+    AND eval_status LIKE '%' || #{eval_status} || '%'
+</if>
+</sql>
+<select id="selectsearchProjectListstu" resultType="projectlist">
+	select *
+	from stu_project
+	WHERE mem_id = #{mem_id}
+	<include refid="search" />
+	order by project_endate desc
+</select>
+<select id="selectsearchProjectListCountstu" resultType="int">
+		select 
+		count (*)
+		from stu_project
+		where mem_id = #{mem_id}
+		<include refid="search" />
+		</select>
+<select id="selectProjectByProjectId" resultType="projectlist">
+		select *
+		from stu_project
+		where project_id = #{project_id}
+		</select>
+<select id="selectsearchProjectListpro" resultType="projectlist">
+  SELECT * FROM (
+    SELECT
+      p.*,
+      ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY project_endate DESC) rn
+    FROM pro_project p
+    WHERE profes_id = #{mem_id}
+    <include refid="search" />
+  )
+  
+  WHERE rn = 1
+  ORDER BY project_endate DESC
+</select>
+<select id ="selectsearchProjectListproCount" resultType="int">
+SELECT COUNT(*) AS cnt
+FROM (
+    SELECT
+        p.*,
+        ROW_NUMBER() OVER (PARTITION BY project_id ORDER BY project_endate DESC) rn
+    FROM pro_project p
+    WHERE profes_id = #{mem_id}
+) t
+WHERE rn = 1;
+</select>
+<select id="selectRoadMapByProject_id" parameterType="str" resultType="roadmap">
+	select R.*, p.project_name, a.mem_name
+	from project p
+	left join roadmap r on p.project_id = r.project_id
+	join account a on r.writer = a.mem_id
+	where p.project_id = #{project_id}
+<include refid="search" />
+	order by rm_regdate desc
+</select>
+<select id="selectRoadMapByProject_idCount" resultType="int">
+	select 
+	count (*)
+	from roadmap
+	where project_id = #{project_id}
+	<include refid="search" />
+</select>
+
+<insert id="insertRoadMap" parameterType="roadmap">
+	insert
+	into
+	roadmap(rm_id,project_id,team_id,rm_name,rm_category,rm_content,eval_status,writer)
+	values
+	(#{rm_id},#{project_id},#{team_id},#{rm_name},#{rm_category},#{rm_content},#{eval_status},#{writer})
+</insert>
+<delete id="deleteRoadMap" parameterType="str">
+	delete
+	from roadmap
+	where rm_id = #{rm_id}
+</delete>
+<select id="selectRoadMapSeqNext" resultType="str">
+		select 'R' || LPAD(roadmap_seq.nextval, 5, '0') from dual
+</select>
+<select id="selectRoadMapByRm_id" resultType="roadmap">
+select *
+from roadmap
+where rm_id = #{rm_id}
+</select>
+<select id="selectEvalStatusByRMid" parameterType="str" resultType="str"> 
+	select eval_status
+	from roadmap 
+	where rm_id = #{rm_id, jdbcType=VARCHAR}
+</select>
+<update id="updateEvalStatus" parameterType="str">
+    UPDATE ROADMAP
+    SET eval_status = '1'
+    WHERE rm_id = #{rm_id}
+</update>
+</mapper>

@@ -103,6 +103,8 @@
 			m.mail_ddate,
 			m.mail_rlock,
 			m.mail_slock,
+			m.mail_sender,
+			m.mail_receiver,
 			a.mem_name as receiver_name,
 			b.mem_name as sender_name,
 			a.mem_email as receiver_email,
@@ -120,7 +122,7 @@
 	
 	
 	
-	<select id="selectSearchReceiveMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchReceiveMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -138,7 +140,7 @@
 		<include refid="receiveSearch" />
 		order by m.mail_rdate desc
 	</select>
-	<select id="selectSearchReceiveImpMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchReceiveImpMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -156,7 +158,7 @@
 		<include refid="receiveSearch" />
 		order by m.mail_rdate desc
 	</select>
-	<select id="selectSearchReceiveReadMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchReceiveReadMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -174,7 +176,7 @@
 		<include refid="receiveSearch" />
 		order by m.mail_rdate desc
 	</select>
-	<select id="selectSearchReceiveLockMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchReceiveLockMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -192,7 +194,7 @@
 		<include refid="receiveSearch" />
 		order by m.mail_rdate desc
 	</select>
-	<select id="selectSearchReceiveMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchReceiveMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -200,7 +202,7 @@
 		where mail_receiver = #{mem_id} and mail_waste = 0 			  	
 		<include refid="receiveSearch" />
 	</select>
-	<select id="selectSearchReceiveImpMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchReceiveImpMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -208,7 +210,7 @@
 		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rimp = 1		  	
 		<include refid="receiveSearch" />
 	</select>
-	<select id="selectSearchReceiveReadMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchReceiveReadMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -216,7 +218,7 @@
 		where mail_receiver = #{mem_id} and mail_waste = 0 and mail_rread = 0 			  	
 		<include refid="receiveSearch" />
 	</select>
-	<select id="selectSearchReceiveLockMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchReceiveLockMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -232,7 +234,7 @@
 	
 	
 	
-	<select id="selectSearchSendMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchSendMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -250,7 +252,7 @@
 		<include refid="sendSearch" />
 		order by m.mail_sdate desc
 	</select>
-	<select id="selectSearchSendImpMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchSendImpMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -268,7 +270,7 @@
 		<include refid="sendSearch" />
 		order by m.mail_sdate desc
 	</select>
-	<select id="selectSearchSendLockMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectSearchSendLockMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -286,7 +288,7 @@
 		<include refid="sendSearch" />
 		order by m.mail_sdate desc
 	</select>
-	<select id="selectSearchSendMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchSendMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -294,7 +296,7 @@
 		where mail_sender = #{mem_id} and mail_waste = 0 			  	
 		<include refid="sendSearch" />
 	</select>
-	<select id="selectSearchSendImpMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchSendImpMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -302,7 +304,7 @@
 		where mail_sender = #{mem_id} and mail_waste = 0 and mail_simp = 1		  	
 		<include refid="sendSearch" />
 	</select>
-	<select id="selectSearchSendLockMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectSearchSendLockMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m
@@ -316,7 +318,7 @@
 	
 	
 	
-	<select id="selectWasteMailList" parameterType="pageMaker" resultType="message">
+	<select id="selectWasteMailList" parameterType="pageMakerWH" resultType="message">
 		select
 			m.mail_id,
 		  	m.mail_name,
@@ -340,7 +342,7 @@
 		where (m.mail_sender = #{mem_id}  OR m.mail_receiver = #{mem_id}) and m.mail_waste = 1
 		order by m.mail_ddate desc
 	</select>
-	<select id="selectWasteMailListCount" parameterType="pageMaker" resultType="int">
+	<select id="selectWasteMailListCount" parameterType="pageMakerWH" resultType="int">
 		select
 		count(*)
 		from mail m

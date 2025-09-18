@@ -1,12 +1,12 @@
 package com.camp_us.command;
 
 public class PageMaker {
-	
+
 	private String searchType = "";
 	private String keyword = "";
 	
 	private int page = 1; // 페이지 번호
-	private int perPageNum = 12; // 리스트 개수
+	private int perPageNum = 10; // 리스트 개수
 	private int totalCount; // 전체 행의 개수
 	private int displayPageNum = 10; // 한 페이지에 보여줄 페이지번호 개수
 	
@@ -15,6 +15,7 @@ public class PageMaker {
 	private int realEndPage; // 끝 페이지 번호
 	private boolean prev; // 이전페이지 버튼 유무
 	private boolean next; // 다음페이지 버튼 유무
+	private String lecId;
 
 	
 	public int getPage() {
@@ -39,11 +40,16 @@ public class PageMaker {
 		return keyword;
 	}
 	public void setKeyword(String keyword) {
-		this.keyword = keyword;
+	    // 공백일 경우 null 처리
+	    if (keyword != null && keyword.trim().isEmpty()) {
+	        this.keyword = null;
+	    } else {
+	        this.keyword = keyword;
+	    }
 	}
 	
 	public int getStartRow() {
-		return (this.page - 1) * this.perPageNum+1;
+	    return getOffset() + 1;  // Oracle ROWNUM은 1부터 시작
 	}
 	public int getTotalCount() {
 		return totalCount;
@@ -89,6 +95,20 @@ public class PageMaker {
 	public void setDisplayPageNum(int displayPageNum) {
 		this.displayPageNum = displayPageNum;
 	}
+	public int getOffset() {
+	    return (this.page - 1) * this.perPageNum;
+	}
+	public int getEndRow() {
+	    return getOffset() + perPageNum;
+	}
+	
+	public String getLecId() {
+	    return lecId;
+	}
+
+	public void setLecId(String lecId) {
+	    this.lecId = lecId;
+	}
 	
 	// starPage,endPage, prev, next 설정. by totalCount
 	private void calcData() {
@@ -107,6 +127,7 @@ public class PageMaker {
 		prev = startPage == 1 ? false : true;
 		next = endPage < realEndPage ? true : false;
 	}
+	
 
 }
 

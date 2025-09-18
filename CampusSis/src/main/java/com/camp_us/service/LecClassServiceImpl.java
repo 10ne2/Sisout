@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.camp_us.dao.LecClassDAO;
 import com.camp_us.dto.LecClassVO;
+import com.camp_us.dto.ProLecVO;
 
 public class LecClassServiceImpl implements LecClassService {
 
@@ -23,4 +24,9 @@ public class LecClassServiceImpl implements LecClassService {
     public LecClassVO getLecClassById(String lec_id) throws SQLException {
         return lecClassDAO.selectLecClassById(lec_id);
     }
+
+	@Override
+	public List<ProLecVO> selectLecClassByProfessorId(String mem_id) throws SQLException {
+		return lecClassDAO.selectLecClassByProfessorId(mem_id);
+	}
 }

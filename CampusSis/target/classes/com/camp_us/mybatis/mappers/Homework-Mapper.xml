@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Homework-Mapper">
+
+	<!-- 과제 목록 (강의별 + 검색어 + 페이징) -->
+	<select id="getHomeworkList"
+		parameterType="pageMaker" resultType="homework">
+		SELECT
+		hwNo, hwName, hwStartDate, hwEndDate, hwDesc, lecId, lecsId,
+		rnum,
+		(total_rows - rnum + 1) AS dispNo
+		FROM (
+		SELECT
+		HW_NO AS hwNo,
+		HW_NAME AS hwName,
+		HW_STARTDATE AS hwStartDate,
+		HW_ENDDATE AS hwEndDate,
+		HW_DESC AS hwDesc,
+		LEC_ID AS lecId,
+		LECS_ID AS lecsId,
+		ROW_NUMBER() OVER
+		(ORDER BY HW_ENDDATE DESC, HW_NO DESC) AS rnum,
+		COUNT(*) OVER () AS
+		total_rows
+		FROM HOMEWORK
+		<where>
+			<if test="lecId != null and lecId != ''">
+				AND LEC_ID = #{lecId}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND HW_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+		</where>
+		)
+		WHERE rnum BETWEEN #{startRow} AND #{endRow}
+	</select>
+
+	<!-- 과제 상세 조회 -->
+	<select id="selectHomeworkByHwNo" parameterType="int"
+		resultType="homework">
+		SELECT
+		HW_NO AS hwNo,
+		HW_NAME AS hwName,
+		HW_STARTDATE AS hwStartDate,
+		HW_ENDDATE AS hwEndDate,
+		HW_DESC AS hwDesc,
+		LEC_ID AS lecId,     <!-- ★ 추가 -->
+		LECS_ID AS lecsId
+		FROM HOMEWORK
+		WHERE HW_NO = #{hwNo}
+	</select>
+
+	<!-- 과제 등록 -->
+	<insert id="insertHomework" parameterType="homework">
+		INSERT INTO HOMEWORK (
+		HW_NO, HW_NAME, HW_STARTDATE, HW_ENDDATE,
+		HW_DESC, LEC_ID, LECS_ID
+		) VALUES (
+		#{hwNo},
+		#{hwName},
+		#{hwStartDate},
+		#{hwEndDate},
+		#{hwDesc},
+		#{lecId},
+		#{lecsId, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 다음 과제 번호 조회 -->
+	<select id="getNextHwNo" resultType="int">
+		SELECT
+		DW001.HOMEWORK_SEQ.NEXTVAL FROM DUAL
+	</select>
+
+	<!-- 과제 총 개수 (강의별 + 검색어) -->
+	<select id="getHomeworkTotalCount"
+		parameterType="pageMaker" resultType="int">
+		SELECT COUNT(*)
+		FROM HOMEWORK
+		<where>
+			<if test="lecId != null and lecId != ''">
+				AND LEC_ID = #{lecId}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND HW_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+		</where>
+	</select>
+
+	<!-- 과제 수정 -->
+	<update id="updateHomework" parameterType="homework">
+		UPDATE HOMEWORK
+		SET HW_NAME = #{hwName},
+		HW_STARTDATE = #{hwStartDate,
+		jdbcType=TIMESTAMP},
+		HW_ENDDATE = #{hwEndDate, jdbcType=TIMESTAMP},
+		HW_DESC = #{hwDesc},
+		LEC_ID = #{lecId},
+		LECS_ID = #{lecsId,
+		jdbcType=VARCHAR}  <!-- ★ 여기 -->
+		WHERE HW_NO = #{hwNo}
+	</update>
+
+	<!-- 과제 삭제 -->
+	<delete id="deleteHomework" parameterType="int">
+		DELETE FROM HOMEWORK
+		WHERE HW_NO = #{hwNo}
+	</delete>
+
+	<!-- (학생 전용) 수강 강의실 과제 목록 -->
+	<select id="getStudentHomeworkList" parameterType="String"
+		resultType="homework">
+		SELECT
+		HW_NO AS hwNo, HW_NAME AS hwName, HW_STARTDATE AS
+		hwStartDate,
+		HW_ENDDATE AS hwEndDate, HW_DESC AS hwDesc, LECS_ID AS
+		lecsId
+		FROM HOMEWORK
+		WHERE LECS_ID IN (
+		SELECT LECS_ID FROM LECTURE_LIST
+		WHERE STU_ID = #{studentId}
+		)
+		ORDER BY HW_STARTDATE DESC
+	</select>
+
+	<select id="getHomeworkByNo" parameterType="int"
+		resultType="homework">
+		SELECT
+		HW_NO AS hwNo,
+		HW_NAME AS hwName,
+		HW_STARTDATE AS
+		hwStartDate,
+		HW_ENDDATE AS hwEndDate,
+		HW_DESC AS hwDesc,
+		LEC_ID AS lecId,
+		LECS_ID AS lecsId
+		FROM HOMEWORK
+		WHERE HW_NO = #{hwNo}
+	</select>
+
+	<select id="selectHomeworkByNo" parameterType="int"
+		resultType="homework">
+		SELECT
+		HW_NO AS hwNo,
+		HW_NAME AS hwName,
+		HW_STARTDATE AS
+		hwStartDate,
+		HW_ENDDATE AS hwEndDate,
+		HW_DESC AS hwDesc,
+		LEC_ID AS lecId,
+		LECS_ID AS lecsId
+		FROM HOMEWORK
+		WHERE HW_NO = #{hwNo}
+	</select>
+
+</mapper>

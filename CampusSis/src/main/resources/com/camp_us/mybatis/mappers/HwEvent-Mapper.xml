@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HomeworkDashboard-Mapper">
+
+  <!-- 대시보드 과제 리스트: memId로 들어오면 STUDENTS를 통해 STU_ID 매핑 -->
+  <select id="selectUpcomingHwEventsByStudent"
+          resultType="hwevent">
+    SELECT
+      h.HW_NO                         AS hw_no,
+      /* LEC_NAME 없을 수도 있으니 LEFT JOIN + NVL 처리 */
+      '[' || NVL(lc.LEC_NAME, h.LEC_ID) || '] ' || h.HW_NAME AS title,
+      'HW-DUE'                        AS type,
+      h.HW_ENDDATE                    AS hw_enddate,
+      h.LEC_ID                        AS lec_id
+    FROM HOMEWORK h
+    LEFT JOIN LEC_CLASS lc ON lc.LEC_ID = h.LEC_ID
+    WHERE h.HW_ENDDATE IS NOT NULL
+      AND EXISTS (
+        SELECT 1
+        FROM LECTURE_LIST x
+        JOIN STUDENTS s ON s.STU_ID = x.STU_ID
+        WHERE s.MEM_ID = #{value}
+          AND (x.LECS_ID = h.LECS_ID OR x.LEC_ID = h.LEC_ID)
+      )
+    ORDER BY h.HW_ENDDATE ASC
+  </select>
+
+  <!-- 달력 점: 날짜/건수 (memId → STU_ID 매핑) -->
+  <select id="selectHwDotsByStudent" resultType="map">
+    SELECT
+      TO_CHAR(h.HW_ENDDATE,'YYYY-MM-DD') AS day,
+      COUNT(*)                           AS cnt
+    FROM HOMEWORK h
+    WHERE h.HW_ENDDATE IS NOT NULL
+      AND EXISTS (
+        SELECT 1
+        FROM LECTURE_LIST x
+        JOIN STUDENTS s ON s.STU_ID = x.STU_ID
+        WHERE s.MEM_ID = #{value}
+          AND (x.LECS_ID = h.LECS_ID OR x.LEC_ID = h.LEC_ID)
+      )
+    GROUP BY TO_CHAR(h.HW_ENDDATE,'YYYY-MM-DD')
+  </select>
+  
+  <!-- 교수 대시보드 과제 리스트 -->
+  <select id="selectUpcomingHwEventsByProfessor"
+          parameterType="str"
+          resultType="hwevent">
+    SELECT
+      h.HW_NO                         AS hw_no,
+      '[' || NVL(lc.LEC_NAME, h.LEC_ID) || '] ' || h.HW_NAME AS title,
+      'HW-DUE'                        AS type,
+      h.HW_ENDDATE                    AS hw_enddate,
+      h.LEC_ID                        AS lec_id
+    FROM HOMEWORK h
+    JOIN LEC_CLASS lc ON lc.LEC_ID = h.LEC_ID
+    WHERE h.HW_ENDDATE IS NOT NULL
+      AND lc.LEC_PROFES = #{value}   <!-- 교수 ID로 필터 -->
+    ORDER BY h.HW_ENDDATE ASC
+  </select>
+
+  <!-- 교수 대시보드 달력 점 -->
+  <select id="selectHwDotsByProfessor"
+          parameterType="str"
+          resultType="map">
+    SELECT
+      TO_CHAR(h.HW_ENDDATE,'YYYY-MM-DD') AS day,
+      COUNT(*)                           AS cnt
+    FROM HOMEWORK h
+    JOIN LEC_CLASS lc ON lc.LEC_ID = h.LEC_ID
+    WHERE h.HW_ENDDATE IS NOT NULL
+      AND lc.LEC_PROFES = #{value}
+    GROUP BY TO_CHAR(h.HW_ENDDATE,'YYYY-MM-DD')
+  </select>
+
+</mapper>
+

@@ -39,7 +39,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
         HttpSession session = request.getSession();
         session.setAttribute("loginUser", member);
-        session.setMaxInactiveInterval(20*60);
+        session.setMaxInactiveInterval(5*60);
 //        response.sendRedirect(getDefaultTargetUrl());
         super.onAuthenticationSuccess(request, response, authentication);
 	}

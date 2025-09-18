@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice-Mapper">
+  <select id="selectRecentNotices" resultType="com.camp_us.dto.NoticeVO">
+    <![CDATA[
+      SELECT
+        n.CONO_ID     AS cono_id,
+        n.CONO_TARGET AS cono_target,
+        n.CONO_NAME   AS cono_name,
+        n.CONO_MEMID  AS cono_memid,
+        n.CONO_DATE   AS cono_date,
+        n.CONO_OBS    AS cono_obs,
+        n.CONO_DESC   AS cono_desc
+      FROM (
+        SELECT *
+        FROM COM_NOTICE
+        WHERE CONO_TARGET IN ('전체','학생')
+        ORDER BY CONO_DATE DESC
+      ) n               -- ★ 서브쿼리 별칭 필수
+      WHERE ROWNUM <= 5
+    ]]>
+  </select>
+</mapper>

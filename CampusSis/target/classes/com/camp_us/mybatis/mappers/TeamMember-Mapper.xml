@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TeamMember-Mapper">
+
+<insert id="insertTeamMember" parameterType="teamMember">
+  INSERT INTO team_member (team_id, stu_id)
+  VALUES (#{team_id}, #{stu_id})
+</insert>
+
+<select id="selectTeamMembersByTeamId" parameterType="str" resultType="teamMember">
+  SELECT * FROM team_member WHERE team_id = #{team_id}
+</select>
+
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HomeworkSubmit-Mapper">
+
+	<insert id="insertHomeworkSubmit" parameterType="homeworksubmit">
+		INSERT INTO HOMEWORK_SUBMIT (
+		HWSUB_HSNO, HW_NO,
+		HWSUB_FILENAME,
+		SUBMITTED_AT,
+		HWSUB_COMMENT, HWSUB_FEEDBACK,
+		HWSUB_STATUS, LECS_ID,
+		STU_ID
+		)
+		VALUES (
+		#{hwsubHsno},
+		#{hwNo},
+		#{hwsubFilename,
+		jdbcType=VARCHAR},  <!-- ★ 핵심 -->
+		SYSDATE,
+		#{hwsubComment, jdbcType=VARCHAR},   <!-- (권장) -->
+		#{hwsubFeedback, jdbcType=VARCHAR},  <!-- (권장) -->
+		#{hwsubStatus, jdbcType=VARCHAR},
+		#{lecsId},
+		#{stuId}
+		)
+	</insert>
+
+	<delete id="deleteHomeworkSubmit" parameterType="str">
+		DELETE FROM
+		HOMEWORK_SUBMIT WHERE HW_NO = #{hwNo}
+	</delete>
+
+	<update id="updateSubmit" parameterType="homeworksubmit">
+		UPDATE HOMEWORK_SUBMIT
+		SET
+		HWSUB_COMMENT = #{hwsubComment},
+		<if test="hwsubFilename != null and hwsubFilename != ''">
+			HWSUB_FILENAME = #{hwsubFilename},
+		</if>
+		SUBMITTED_AT = SYSDATE
+		WHERE HW_NO = #{hwNo}
+		AND STU_ID = #{stuId}
+		AND
+		LECS_ID = #{lecsId}
+	</update>
+
+	<select id="selectHomeworkByNo" parameterType="int"
+		resultType="homework">
+		SELECT * FROM HOMEWORK WHERE HW_NO = #{hwNo}
+	</select>
+
+	<select id="selectSubmitByStuIdAndHwNo" parameterType="map"
+		resultType="homeworksubmit">
+		SELECT
+		hs.HWSUB_HSNO AS hwsubHsno,
+		hs.HW_NO AS hwNo,
+		hs.STU_ID AS stuId,
+		hs.LECS_ID AS lecsId,
+		hs.HWSUB_COMMENT AS
+		hwsubComment,
+		hs.HWSUB_FILENAME AS hwsubFilename,
+		hs.HWSUB_STATUS AS
+		hwsubStatus,
+		hs.HWSUB_FEEDBACK AS hwsubFeedback,
+		hs.SUBMITTED_AT AS
+		submittedAt,
+		sacc.MEM_NAME AS writer,
+
+		pr.PROFES_ID AS professorId,
+		pacc.MEM_ID   AS professorMemId,
+		pacc.MEM_NAME AS professorName,
+		pacc.PICTURE AS professorPicPath
+		FROM
+		HOMEWORK_SUBMIT hs
+		JOIN ACCOUNT sacc ON sacc.MEM_ID = hs.STU_ID
+		JOIN
+		HOMEWORK h ON h.HW_NO = hs.HW_NO
+		LEFT JOIN LEC_CLASS lc ON lc.LEC_ID =
+		h.LEC_ID
+		LEFT JOIN PROFESSOR pr ON pr.PROFES_ID = lc.LEC_PROFES
+		LEFT
+		JOIN ACCOUNT pacc ON pacc.MEM_ID = pr.MEM_ID
+		WHERE hs.STU_ID = #{stuId}
+		AND hs.HW_NO = #{hwNo}
+		AND ROWNUM = 1
+		ORDER BY hs.SUBMITTED_AT DESC,
+		hs.HWSUB_HSNO DESC
+	</select>
+
+	<select id="selectSubmitListByHwNo" parameterType="int"
+		resultType="homeworksubmit">
+		SELECT
+		hs.HWSUB_HSNO AS hwsubHsno,
+		hs.HW_NO AS hwNo,
+		hs.STU_ID AS stuId,
+		hs.LECS_ID AS lecsId,
+		hs.HWSUB_COMMENT AS
+		hwsubComment,
+		hs.HWSUB_FILENAME AS hwsubFilename,
+		hs.HWSUB_STATUS AS
+		hwsubStatus,
+		hs.HWSUB_FEEDBACK AS hwsubFeedback,
+		hs.SUBMITTED_AT AS
+		submittedAt,
+		sacc.MEM_NAME AS writer,
+
+		pr.PROFES_ID AS professorId,
+		pacc.MEM_ID   AS professorMemId,
+		pacc.MEM_NAME AS professorName,
+		pacc.PICTURE AS professorPicPath
+		FROM
+		HOMEWORK_SUBMIT hs
+		JOIN ACCOUNT sacc ON sacc.MEM_ID = hs.STU_ID
+		JOIN
+		HOMEWORK h ON h.HW_NO = hs.HW_NO
+		LEFT JOIN LEC_CLASS lc ON lc.LEC_ID =
+		h.LEC_ID
+		LEFT JOIN PROFESSOR pr ON pr.PROFES_ID = lc.LEC_PROFES
+		LEFT
+		JOIN ACCOUNT pacc ON pacc.MEM_ID = pr.MEM_ID
+		WHERE hs.HW_NO = #{hwNo}
+		ORDER BY hs.SUBMITTED_AT DESC, hs.HWSUB_HSNO DESC
+	</select>
+
+	<select id="selectSubmitById" parameterType="str"
+		resultType="homeworksubmit">
+		SELECT
+		hs.HWSUB_HSNO AS hwsubHsno,
+		hs.HW_NO AS hwNo,
+		hs.STU_ID AS stuId,
+		hs.LECS_ID AS lecsId,
+		hs.HWSUB_COMMENT AS hwsubComment,
+		hs.HWSUB_FILENAME AS hwsubFilename,
+		hs.HWSUB_STATUS AS hwsubStatus,
+		hs.HWSUB_FEEDBACK AS hwsubFeedback,
+		hs.SUBMITTED_AT AS submittedAt,
+		sacc.MEM_NAME AS writer,
+
+		pr.PROFES_ID AS professorId,
+		pacc.MEM_ID   AS professorMemId,
+		pacc.MEM_NAME AS professorName,
+		pacc.PICTURE AS professorPicPath
+		FROM HOMEWORK_SUBMIT hs
+		JOIN ACCOUNT sacc ON sacc.MEM_ID = hs.STU_ID
+		JOIN HOMEWORK h ON h.HW_NO = hs.HW_NO
+		LEFT JOIN LEC_CLASS lc ON lc.LEC_ID = h.LEC_ID
+		LEFT JOIN PROFESSOR pr ON pr.PROFES_ID = lc.LEC_PROFES
+		LEFT JOIN ACCOUNT pacc ON pacc.MEM_ID = pr.MEM_ID
+		WHERE hs.HWSUB_HSNO = #{submitId}
+	</select>
+
+	<update id="updateFeedback" parameterType="homeworksubmit">
+		UPDATE HOMEWORK_SUBMIT
+		SET HWSUB_FEEDBACK = #{hwsubFeedback}
+		WHERE HWSUB_HSNO = #{hwsubHsno}
+	</update>
+	<!-- 과제별 총 제출 수 -->
+	<select id="countSubmitByHwNo" parameterType="int"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM HOMEWORK_SUBMIT
+		WHERE HW_NO = #{hwNo}
+	</select>
+
+	<!-- 과제별 미평가(피드백 비어있음) 수 - 오타 수정 + Oracle 안전 처리 -->
+	<select id="countUngradedByHwNo" parameterType="int"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM HOMEWORK_SUBMIT
+		WHERE HW_NO = #{hwNo}
+		AND ( HWSUB_FEEDBACK IS NULL
+		OR LENGTH(TRIM(NVL(HWSUB_FEEDBACK, ''))) =
+		0 )
+	</select>
+
+</mapper>

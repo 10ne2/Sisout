@@ -3,7 +3,6 @@ package com.camp_us.controller;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import com.camp_us.service.OtherDashStuService;
 import com.camp_us.service.UnsubmitHomeworkService;
 
 @Controller
-@RequestMapping("/lectureStu")
+@RequestMapping("/lecDashStu")
 public class LecClassController {
     
     @Autowired
@@ -70,7 +69,7 @@ public class LecClassController {
 		List<OtherDashStuVO> attendencePercent = otherDashStuService.getAttendencePercent(stu_id);
 		model.addAttribute("attendencePercent", attendencePercent);
 		
-		return "lecture/main";
+		return "dashboardstu/main";
 	}
 
     @GetMapping("/changeMajor")

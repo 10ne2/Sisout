@@ -67,10 +67,10 @@
 	
 	<select id="selectAttendencePercent" parameterType="String" resultType="otherdashstu">
 		SELECT
-		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_no,
-		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 2 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_late,
-		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 3 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_ok,
-		  ROUND(100.0 * SUM(CASE WHEN attendanceStatus = 0 THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_none
+		  	ROUND(100.0 * SUM(CASE WHEN attendanceStatus = '결석' THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_no,
+			ROUND(100.0 * SUM(CASE WHEN attendanceStatus = '지각' THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_late,
+			ROUND(100.0 * SUM(CASE WHEN attendanceStatus = '출석' THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_ok,
+			ROUND(100.0 * SUM(CASE WHEN attendanceStatus IS NULL THEN 1 ELSE 0 END) / COUNT(*), 2) AS rate_none
 		FROM vw_atten_list 
 		WHERE stu_id = #{stu_id}
 		  AND classdate >= lec_date   

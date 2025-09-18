@@ -3,7 +3,7 @@ package com.camp_us.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.camp_us.command.PageMaker;
+import com.camp_us.command.PageMakerWH;
 import com.camp_us.dto.MessageVO;
 
 public interface MessageDAO {
@@ -19,26 +19,26 @@ public interface MessageDAO {
 	List<MessageVO> selectAllWasteMail(String mem_id) throws SQLException;
 	
 	//받은메일함
-	List<MessageVO> selectSearchReceiveMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	List<MessageVO> selectSearchReceiveImpMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	List<MessageVO> selectSearchReceiveReadMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	List<MessageVO> selectSearchReceiveLockMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchReceiveMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchReceiveImpMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchReceiveReadMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchReceiveLockMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchReceiveMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchReceiveImpMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchReceiveReadMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchReceiveLockMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchReceiveMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchReceiveImpMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchReceiveReadMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchReceiveLockMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
 	
 	//보낸메일함
-	List<MessageVO> selectSearchSendMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	List<MessageVO> selectSearchSendImpMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	List<MessageVO> selectSearchSendLockMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchSendMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchSendImpMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectSearchSendLockMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchSendMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchSendImpMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectSearchSendLockMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchSendMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchSendImpMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectSearchSendLockMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
 	
 	//휴지통
-	List<MessageVO> selectWasteMailList(PageMaker pageMaker, String mem_id) throws SQLException;
-	int selectWasteMailListCount(PageMaker pageMaker, String mem_id) throws SQLException;
+	List<MessageVO> selectWasteMailList(PageMakerWH pageMaker, String mem_id) throws SQLException;
+	int selectWasteMailListCount(PageMakerWH pageMaker, String mem_id) throws SQLException;
 	
 	//오토인크리드
 	int selectMailSeqNext()throws SQLException;

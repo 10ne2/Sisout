@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.camp_us.mapper.LecVideoMapper">
+
+	<insert id="insertVideo" parameterType="LecVideoVO">
+		INSERT INTO LEC_VIDEO (
+		LECVID_ID, LEC_ID, LECVID_NAME, LECVID_VIDNAME,
+		LECVID_VIDPATH,
+		LECVID_THUMBNAIL, LECVID_WEEK,
+		LECVID_DEADLINE, LECVID_DETAIL
+		) VALUES (
+		#{lecvidId}, #{lecId}, #{lecvidName}, #{lecvidVidname},
+		#{lecvidVidpath}, #{lecvidThumbnail}, #{lecvidWeek},
+		#{lecvidDeadline}, #{lecvidDetail}
+		)
+	</insert>
+
+	<update id="updateVideo" parameterType="LecVideoVO">
+		UPDATE LEC_VIDEO
+		SET
+		LECVID_NAME = #{lecvidName},
+		LECVID_DETAIL = #{lecvidDetail},
+		LECVID_WEEK = #{lecvidWeek},
+		LECVID_DEADLINE = #{lecvidDeadline},
+		<if test="lecvidVidpath != null">LECVID_VIDPATH = #{lecvidVidpath},</if>
+		<if test="lecvidVidname != null">LECVID_VIDNAME = #{lecvidVidname},</if>
+		<if test="lecvidThumbnail != null">LECVID_THUMBNAIL = #{lecvidThumbnail},</if>
+		LEC_ID = #{lecId}
+		WHERE LECVID_ID = #{lecvidId}
+	</update>
+
+	<select id="selectVideo" resultType="LecVideoVO"
+		parameterType="String">
+		SELECT * FROM LEC_VIDEO WHERE LECVID_ID = #{lecvidId}
+	</select>
+
+	<select id="selectVideosByLecture" resultType="LecVideoVO"
+		parameterType="String">
+		SELECT
+		LECVID_ID AS lecvidId,
+		LEC_ID AS lecId,
+		LECVID_NAME
+		AS lecvidName,
+		LECVID_VIDNAME AS lecvidVidname,
+		LECVID_VIDPATH AS
+		lecvidVidpath,
+		LECVID_THUMBNAIL AS lecvidThumbnail,
+		LECVID_WEEK AS
+		lecvidWeek,
+		LECVID_DEADLINE AS lecvidDeadline,
+		LECVID_DETAIL AS
+		lecvidDetail
+		FROM LEC_VIDEO
+		WHERE LEC_ID = #{lecId}
+		ORDER BY LECVID_WEEK
+	</select>
+
+	<select id="selectVideosByWeek"
+		resultType="com.camp_us.dto.LecVideoVO" parameterType="map">
+		SELECT
+		LECVID_ID
+		AS lecvidId,
+		LEC_ID AS lecId,
+		LECVID_NAME AS lecvidName,
+		LECVID_VIDNAME
+		AS lecvidVidname,
+		LECVID_VIDPATH AS lecvidVidpath,
+		LECVID_THUMBNAIL AS
+		lecvidThumbnail,
+		LECVID_WEEK AS lecvidWeek,
+		LECVID_DEADLINE AS
+		lecvidDeadline,
+		LECVID_DETAIL AS lecvidDetail
+		FROM LEC_VIDEO
+		WHERE LEC_ID
+		= #{lecId}
+		AND LECVID_WEEK = #{lecvidWeek}
+		ORDER BY LECVID_ID
+	</select>
+
+	<select id="getLectureIdByVideoId" resultType="String"
+		parameterType="String">
+		SELECT LEC_ID FROM LEC_VIDEO WHERE LECVID_ID =
+		#{lecvidId}
+	</select>
+
+	<select id="getVideoById" parameterType="String"
+		resultType="com.camp_us.dto.LecVideoVO">
+		SELECT
+		LECVID_ID
+		AS lecvidId,
+		LEC_ID AS lecId,
+		LECVID_NAME AS
+		lecvidName,
+		LECVID_VIDNAME
+		AS lecvidVidname,
+		LECVID_VIDPATH AS
+		lecvidVidpath,
+		LECVID_THUMBNAIL AS
+		lecvidThumbnail,
+		LECVID_WEEK AS
+		lecvidWeek,
+		LECVID_DEADLINE AS
+		lecvidDeadline,
+		LECVID_DETAIL AS
+		lecvidDetail
+		FROM LEC_VIDEO
+		WHERE LECVID_ID = #{lecvidId}
+	</select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Evaluation-Mapper">
+
+	<select id="selectEvaluationList" resultType="evaluation">
+		select *
+		from evaluation
+		where rm_id=#{rm_id}
+		order by eval_regdate desc
+	</select>
+	<select id="selectEvaluationByEval_id" resultType="evaluation">
+		select *
+		from evaluation
+		where eval_id=#{eval_id}	
+	</select>
+	<select id="countEvaluation" resultType="int">
+		select count(rm_id) 
+		from evaluation
+		where rm_id=#{rm_id}
+	</select>
+	<select id="selectEvaluationSeqNextValue" resultType="str" >
+		select 'E' || LPAD(evaluation_seq.nextval, 5, '0') from dual	
+	</select>
+	<insert id="insertEvaluation" parameterType="evaluation">
+		insert into evaluation(eval_id,rm_id,eval_content,profes_id,eval_score)
+		values(#{eval_id},#{rm_id},#{eval_content},#{profes_id},#{eval_score})
+	</insert>
+	
+	<update id="updateEvaluation" parameterType="evaluation">
+		update Evaluation 
+		set 
+		eval_content=#{eval_content},
+		eval_update=sysdate
+		where eval_id=#{eval_id}		
+	</update>
+	
+	<delete id="deleteEvaluation" parameterType="evaluation">
+		delete from Evaluation
+		where eval_id=#{eval_id}		
+	</delete>	
+</mapper>
+
+
+
+
+

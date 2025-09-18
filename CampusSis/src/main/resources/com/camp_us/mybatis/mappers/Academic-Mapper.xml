@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.camp_us.dao.AcademicDAO">
+	<!-- 여기부터 쿼리들 -->
+	<select id="selectByMemId" parameterType="str" resultType="academic">
+  SELECT
+    NVL(sa.stu_id, s.stu_id) AS stuId,
+    sa.entrance_year  AS entranceYear,
+    sa.entrance_date  AS entranceDate,
+    sa.entry_grade    AS entryGrade,
+    sa.college        AS college,
+    sa.major          AS major,
+    sa.minor          AS minor,
+    sa.grad_year      AS gradYear,
+    sa.semesters      AS semesters,
+    sa.grad_major     AS gradMajor,
+    sa.grad_dept      AS gradDept,
+    sa.grad_date      AS gradDate
+  FROM DW001.STUDENTS s
+  JOIN DW001.ACCOUNT a
+    ON UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(s.MEM_ID))
+  LEFT JOIN DW001.STUDENT_ACADEMIC sa
+    ON UPPER(TRIM(sa.STU_ID)) = UPPER(TRIM(s.STU_ID))
+  WHERE UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(#{memId}))
+</select>
+
+	<update id="upsert" parameterType="academic">
+  MERGE INTO DW001.STUDENT_ACADEMIC t
+  USING (SELECT
+    #{stuId}        AS stu_id,
+    #{entranceYear} AS entrance_year,
+    #{entranceDate} AS entrance_date,
+    #{entryGrade}   AS entry_grade,
+    #{college}      AS college,
+    #{major}        AS major,
+    #{minor}        AS minor,
+    #{gradYear}     AS grad_year,
+    #{semesters}    AS semesters,
+    #{gradMajor}    AS grad_major,
+    #{gradDept}     AS grad_dept,
+    #{gradDate}     AS grad_date
+  FROM dual) src
+  ON (UPPER(TRIM(t.stu_id)) = UPPER(TRIM(src.stu_id)))
+  WHEN MATCHED THEN UPDATE SET
+    t.entrance_year = src.entrance_year,
+    t.entrance_date = src.entrance_date,
+    t.entry_grade   = src.entry_grade,
+    t.college       = src.college,
+    t.major         = src.major,
+    t.minor         = src.minor,
+    t.grad_year     = src.grad_year,
+    t.semesters     = src.semesters,
+    t.grad_major    = src.grad_major,
+    t.grad_dept     = src.grad_dept,
+    t.grad_date     = src.grad_date
+  WHEN NOT MATCHED THEN
+    INSERT (stu_id, entrance_year, entrance_date, entry_grade,
+            college, major, minor, grad_year, semesters,
+            grad_major, grad_dept, grad_date)
+    VALUES (src.stu_id, src.entrance_year, src.entrance_date, src.entry_grade,
+            src.college, src.major, src.minor, src.grad_year, src.semesters,
+            src.grad_major, src.grad_dept, src.grad_date);
+</update>
+
+	
+	<select id="countSaByMemId" parameterType="str" resultType="int">
+  SELECT COUNT(*)
+  FROM DW001.STUDENT_ACADEMIC sa
+  WHERE UPPER(TRIM(sa.STU_ID)) = (
+    SELECT UPPER(TRIM(s.STU_ID))
+    FROM DW001.STUDENTS s
+    JOIN DW001.ACCOUNT a
+      ON UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(s.MEM_ID))
+    WHERE UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(#{memId}))
+  )
+</select>
+<select id="whoAmI" resultType="str">
+  SELECT SYS_CONTEXT('USERENV','SESSION_USER')
+         ||'/'||SYS_CONTEXT('USERENV','CURRENT_SCHEMA')
+         ||'@'||SYS_CONTEXT('USERENV','DB_NAME')
+  FROM dual
+</select>
+
+<select id="findStuIdByMemId" parameterType="str" resultType="str">
+  SELECT s.STU_ID
+  FROM DW001.STUDENTS s
+  JOIN DW001.ACCOUNT a
+    ON UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(s.MEM_ID))
+  WHERE UPPER(TRIM(a.MEM_ID)) = UPPER(TRIM(#{memId}))
+</select>
+
+<select id="countSaByStuId" parameterType="str" resultType="int">
+  SELECT COUNT(*)
+  FROM DW001.STUDENT_ACADEMIC
+  WHERE UPPER(TRIM(STU_ID)) = UPPER(TRIM(#{stuId}))
+</select>
+</mapper>

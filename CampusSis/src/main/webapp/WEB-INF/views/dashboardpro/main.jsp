@@ -222,9 +222,9 @@
 													style="width: 20%;">
 													2025. 08.13.</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">김원희</td>
+													style="width: 10%;">김원희</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">독서와 토론</td>
+													style="width: 30%;">독서와 토론</td>
 												<td class="jsgrid-cell jsgrid-align-center"
 													style="width: 40%;">출결 이의신청 있습니다.</td>
 											</tr>
@@ -233,20 +233,20 @@
 													style="width: 20%; ">
 													2025. 08.12.</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">김선범</td>
+													style="width: 10%;">김선범</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">AI·빅데이터 실무 워크숍</td>
+													style="width: 30%;">AI·빅데이터 실무 워크숍</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 40%;">안녕하세요. 교수님 AI 수업 듣는 김선범입니다.</td>
+													style="width: 40%;">안녕하세요. AI 수업 듣는 김선범입니다.</td>
 											</tr>
 											<tr class="clickable jsgrid-row" data-url="homeworkDetail.do?hwId=${hw.hw_id}" style="cursor: pointer;">
 												<td class="jsgrid-cell jsgrid-align-center"
 													style="width: 20%; ">
 													2025. 08.12.</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">권오규</td>
+													style="width: 10%;">권오규</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">캡스톤 디자인</td>
+													style="width: 30%;">캡스톤 디자인</td>
 												<td class="jsgrid-cell jsgrid-align-center"
 													style="width: 40%;">출결 이의신청합니다.</td>
 											</tr>
@@ -255,11 +255,11 @@
 													style="width: 20%; ">
 													2025. 08.11.</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">김민주</td>
+													style="width: 10%;">김민주</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 20%;">문제 해결 프로젝트 실습</td>
+													style="width: 30%;">문제 해결 프로젝트 실습</td>
 												<td class="jsgrid-cell jsgrid-align-center"
-													style="width: 40%;">안녕하세요, 교수님. 출결 이의신청 있습니다.</td>
+													style="width: 40%;">안녕하세요, 교수님. 이의신청 있습니다.</td>
 											</tr>
 								</tbody>
 							</table>
