@@ -32,6 +32,7 @@
 		update Evaluation 
 		set 
 		eval_content=#{eval_content},
+		eval_score=#{eval_score},
 		eval_update=sysdate
 		where eval_id=#{eval_id}		
 	</update>
@@ -41,8 +42,3 @@
 		where eval_id=#{eval_id}		
 	</delete>	
 </mapper>
-
-
-
-
-

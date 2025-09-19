@@ -272,15 +272,20 @@ public class ProjectController2 {
 
         // 승인/거부 분기
         if (request.getProject() != null && request.getTeam() != null) {
-            // 승인 로직
             ProjectListVO project = request.getProject();
             TeamVO team = request.getTeam();
             List<String> team_member_ids = request.getTeam_member_ids();
 
+            // team_id 세팅
+            String teamId = team.getTeam_id();
+            project.setTeam_id(teamId);
+
+            // TeamMemberVO 리스트 생성
             List<TeamMemberVO> teamMember = team_member_ids.stream()
-                .map(tmId -> {
+                .map(member -> {
                     TeamMemberVO tm = new TeamMemberVO();
-                    tm.setTeam_member(tmId);
+                    tm.setTeam_id(teamId);       // 팀 ID
+                    tm.setTeam_member(member);   // team_member 값
                     return tm;
                 })
                 .collect(Collectors.toList());
@@ -288,7 +293,7 @@ public class ProjectController2 {
             projectService.updateProjectTeamAndMembers(project, team, teamMember);
         }
 
-        // 승인/거부 둘 다 요청 삭제
+        // 승인/거부 요청 삭제
         projectService.deleteEditBefore(beforeId);
 
         // JSON 응답
@@ -298,6 +303,7 @@ public class ProjectController2 {
 
         return ResponseEntity.ok(response);
     }
+
     // ✅ 프로젝트 등록 처리
     @PostMapping("/regist")
     public ResponseEntity<?> registPost(@RequestBody ProjectRegistCommand command) throws Exception {
