@@ -72,16 +72,12 @@ public class LectureVideoController {
 	            String aNo = lecId + memId + video.getLecvidId();
 	            AttendanceVO att = attendanceService.getAttendanceInfo(aNo);
 	            if (att != null) {
-	                video.setProgress(Integer.parseInt(att.getProgress()));
-	                model.addAttribute("vidprogress", Integer.parseInt(att.getProgress()));
-	                // VO에 주입
+	                video.setProgress(Integer.parseInt(att.getProgress())); // VO에 세팅
 	            } else {
-	                video.setProgress(0); // 없으면 0%
-	                model.addAttribute("vidprogress", 0);
+	                video.setProgress(0);
 	            }
 	        }
 	    }
-
 	    model.addAttribute("videoList", list);
 	    model.addAttribute("lecId", lecId);
 	    model.addAttribute("week", week);

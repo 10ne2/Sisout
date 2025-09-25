@@ -77,7 +77,7 @@
 		WHERE LEC_ID
 		= #{lecId}
 		AND LECVID_WEEK = #{lecvidWeek}
-		ORDER BY LECVID_ID
+		order by LECVID_DEADLINE desc
 	</select>
 
 	<select id="getLectureIdByVideoId" resultType="String"
@@ -109,5 +109,10 @@
 		FROM LEC_VIDEO
 		WHERE LECVID_ID = #{lecvidId}
 	</select>
-
+	<select id="selectWeeksByLecture" resultType="str" parameterType="str">
+    SELECT DISTINCT LECVID_WEEK
+    FROM LEC_VIDEO
+    WHERE LEC_ID = #{lecId}
+    ORDER BY LECVID_WEEK
+</select>
 </mapper>

@@ -46,4 +46,8 @@ public class LecVideoServiceImpl implements LecVideoService {
     public LecVideoVO getVideoById(String lecvidId) {
         return videoDAO.getVideoById(lecvidId);
     }
+    @Override
+    public List<String> getWeeksByLecture(String lecId) {
+         return videoDAO.selectWeeksByLecture(lecId);
+    }
 }

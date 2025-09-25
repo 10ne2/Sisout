@@ -14,4 +14,5 @@ public interface LecVideoDAO {
     List<LecVideoVO> selectVideosByWeek(@Param("lecId") String lecId, @Param("lecvidWeek") String lecvidWeek);
     String getLectureIdByVideoId(String lecvidId);
     LecVideoVO getVideoById(String lecvidId);
+    List<String> selectWeeksByLecture(String lecId);
 }

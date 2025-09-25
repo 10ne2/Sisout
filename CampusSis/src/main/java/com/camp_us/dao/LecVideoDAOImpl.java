@@ -49,5 +49,8 @@ public class LecVideoDAOImpl implements LecVideoDAO {
     public LecVideoVO getVideoById(String lecvidId) {
         return sqlSession.selectOne(NAMESPACE + ".getVideoById", lecvidId);
     }
-
+    @Override
+    public List<String> selectWeeksByLecture(String lecId) {
+        return sqlSession.selectList(NAMESPACE + ".selectWeeksByLecture", lecId);
+    }
 }

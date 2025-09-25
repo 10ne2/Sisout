@@ -221,50 +221,70 @@ public class RodeMapController2 {
 	        return result;
 	    }
 	
-	@GetMapping("/regist")
-	public String registForm(HttpSession session, @RequestParam("project_id") String project_id,Model model)throws SQLException {
-		String url="/roadmap/regist";
-		MemberVO member = (MemberVO) session.getAttribute("loginUser");
-        if (member == null) {
-            throw new IllegalStateException("로그인 정보가 없습니다.");
-        }
-        model.addAttribute("member",member);
-        String mem_id = member.getMem_id();
-        
-		List<ProjectListVO> projectList = projectService.selectProjectByProjectId(project_id);
-        List<MemberVO> professorList = projectService.selectProfessorList();
-        List<MemberVO> studentList = projectService.selectTeamMemberList();
-        List<String>teammembers = projectService.selectTeamMembers(project_id);
-        String teammembersStr = String.join(", ", teammembers);
-        
-   
-        model.addAttribute("teammembers", teammembersStr);
-        model.addAttribute("professorList", professorList);	
-        model.addAttribute("studentList", studentList);
-        model.addAttribute("projectList", projectList);
-        
-		return url;
-	}
-	@PostMapping(value = "/regist", produces = "text/plain;charset=utf-8")
-	public ModelAndView regist(HttpSession session, RoadMapRegistCommand regCommand, ModelAndView mnv)throws Exception {
-		String url = "/roadmap/regist_success";
-		List<MultipartFile> uploadFiles  = regCommand.getUploadFile();
-		String uploadPath = fileUploadPath;
-		//DB 
-		List<AttachVO> attaches = saveFileToAttaches(uploadFiles, uploadPath);
-		System.out.println("uploadFiles = " + regCommand.getUploadFile());
-		System.out.println("fileUploadPath = " + fileUploadPath);
-				RoadMapVO roadMap = regCommand.toRoadMapVO();
-				roadMap.setRm_name(HTMLInputFilter.htmlSpecialChars(roadMap.getRm_name()));
-				roadMap.setAttachList(attaches);
-				String project_id = roadMap.getProject_id();
-				System.out.println("Upload path: " + fileUploadPath);
-				roadMapService.regist(roadMap);
-				roadMapService.updateRoadMapStatus(project_id);
-				mnv.addObject("project_id", project_id);
-				mnv.setViewName(url);
-				return mnv;
-	}
+	 @GetMapping("/regist")
+	    public ResponseEntity<Map<String, Object>> registForm(
+	            @RequestParam("mem_id") String memId,
+	            @RequestParam("project_id") String projectId) throws SQLException {
+
+	        MemberVO member = memberService.getMemberById(memId);
+	        if (member == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                                 .body(Map.of("success", false, "message", "로그인 정보가 없습니다."));
+	        }
+
+	        List<ProjectListVO> projectList = projectService.selectProjectByProjectId(projectId);
+	        List<MemberVO> professorList = projectService.selectProfessorList();
+	        List<MemberVO> studentList = projectService.selectTeamMemberList();
+	        List<String> teammembers = projectService.selectTeamMembers(projectId);
+	        String teammembersStr = String.join(", ", teammembers);
+
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("member", member);
+	        response.put("teammembers", teammembersStr);
+	        response.put("professorList", professorList);
+	        response.put("studentList", studentList);
+	        response.put("projectList", projectList);
+
+	        return ResponseEntity.ok(response);
+	    }
+
+	    @PostMapping(value = "/regist",
+	    	    consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+	    	    produces = MediaType.APPLICATION_JSON_VALUE)
+	    public ResponseEntity<Map<String, Object>> regist(
+	    		@RequestParam("mem_id") String memId,
+	            RoadMapRegistCommand regCommand) throws Exception {
+
+	        MemberVO member = memberService.getMemberById(memId);
+	        if (member == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                                 .body(Map.of("success", false, "message", "로그인 정보가 없습니다."));
+	        }
+
+	        List<MultipartFile> uploadFiles = regCommand.getUploadFile();
+	        String uploadPath = fileUploadPath;
+
+	        // 파일 저장
+	        List<AttachVO> attaches = saveFileToAttaches(uploadFiles, uploadPath);
+
+	        // RoadMap 생성
+	        RoadMapVO roadMap = regCommand.toRoadMapVO();
+	        roadMap.setRm_name(HTMLInputFilter.htmlSpecialChars(roadMap.getRm_name()));
+	        roadMap.setAttachList(attaches);
+
+	        String project_id = roadMap.getProject_id();
+
+	        // 서비스 호출
+	        roadMapService.regist(roadMap);
+	        roadMapService.updateRoadMapStatus(project_id);
+
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("success", true);
+	        response.put("message", "로드맵이 등록되었습니다.");
+	        response.put("project_id", project_id);
+
+	        return ResponseEntity.ok(response);
+	    }
 	@GetMapping("/detail")
     public ResponseEntity<?> getRoadMapDetail(
             @RequestParam String rm_id,

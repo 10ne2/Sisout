@@ -2,13 +2,22 @@ package com.camp_us.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.camp_us.dao.LectureListDAO;
@@ -38,7 +47,7 @@ public class LectureVideoController2 {
             @RequestParam("lecId") String lecId,
             @RequestParam(value="week", defaultValue="1주차") String week,
             @RequestParam("memId") String memId
-    )throws Exception {
+    ) throws Exception {
         MemberVO member = memberService.getMemberById(memId);
         if (member == null) {
             return ResponseEntity.status(401).body(Map.of("ok", false, "message", "INVALID_USER"));
@@ -47,6 +56,7 @@ public class LectureVideoController2 {
         boolean isStudent   = member.getMem_auth().contains("ROLE01");
         boolean isProfessor = member.getMem_auth().contains("ROLE02");
 
+        // 선택한 주차 영상 가져오기
         List<LecVideoVO> list = lecVideoService.getVideosByWeek(lecId, week);
 
         if (isStudent) {
@@ -61,11 +71,15 @@ public class LectureVideoController2 {
             }
         }
 
+        // ✅ 강의에 등록된 모든 주차 가져오기
+        List<String> allWeeks = lecVideoService.getWeeksByLecture(lecId);
+
         Map<String,Object> body = new HashMap<>();
         body.put("videoList", list);
         body.put("lecId", lecId);
         body.put("week", week);
         body.put("role", isStudent ? "student" : (isProfessor ? "professor" : "guest"));
+        body.put("allWeeks", allWeeks); // ← 여기에 모든 주차 추가
 
         return ResponseEntity.ok(body);
     }
@@ -73,16 +87,22 @@ public class LectureVideoController2 {
     /** ✅ 영상 등록 */
     @PostMapping("/register")
     public ResponseEntity<?> registerVideo(
-            @RequestParam("lecId") String lecId,
-            @RequestParam("title") String title,
-            @RequestParam("videoFile") MultipartFile videoFile,
-            @RequestParam("thumbFile") MultipartFile thumbFile
+    		@RequestParam("lecId") String lecId,
+            @RequestParam("lecvidName") String lecvidName,
+            @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") Date deadline,
+            @RequestParam(value="detail", required=false) String detail,
+            @RequestParam(value="week", required=false) String week,
+            @RequestParam(value="videoFile", required=false) MultipartFile videoFile,
+            @RequestParam(value="thumbFile", required=false) MultipartFile thumbFile
     ) throws IOException {
 
-        LecVideoVO vo = new LecVideoVO();
+    	LecVideoVO vo = new LecVideoVO();
         vo.setLecId(lecId);
         vo.setLecvidId(UUID.randomUUID().toString());
-        vo.setLecvidName(title);
+        vo.setLecvidName(lecvidName);
+        vo.setLecvidDetail(detail);
+        vo.setLecvidWeek(week);
+        vo.setLecvidDeadline(deadline);
 
         File dir = new File(uploadPath);
         if (!dir.exists()) dir.mkdirs();
@@ -145,10 +165,14 @@ public class LectureVideoController2 {
 
     /** ✅ 영상 시청 진행도 업데이트 */
     @PostMapping("/progress")
-    public ResponseEntity<?> updateAttendanceProgress(
-            @RequestParam("aNo") String aNo,
-            @RequestParam("progress") String progressStr
-    ) {
+    public ResponseEntity<?> updateAttendanceProgress(@RequestBody Map<String, String> payload) {
+        String aNo = payload.get("aNo");
+        String progressStr = payload.get("progress");
+
+        if (aNo == null || progressStr == null) {
+            return ResponseEntity.badRequest().body(Map.of("ok", false, "message", "MISSING_PARAMETERS"));
+        }
+
         AttendanceVO attendance = new AttendanceVO();
         attendance.setaNo(aNo);
         attendance.setProgress(progressStr);
@@ -163,6 +187,7 @@ public class LectureVideoController2 {
         }
 
         attendanceService.updateAttendance(attendance);
+
         return ResponseEntity.ok(Map.of("ok", true));
     }
 

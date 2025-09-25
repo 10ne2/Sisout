@@ -12,6 +12,6 @@ public interface LecVideoService {
     List<LecVideoVO> getVideosByWeek(String lecId, String week);
     String getLectureIdByVideoId(String lecvidId);
     LecVideoVO getVideoById(String lecvidId);
-
+    List<String> getWeeksByLecture(String lecId);
 
 }
